@@ -11,7 +11,7 @@ final class FloatingBubbleController {
     private let visualState = BubbleVisualState()
     private let soundPlayer = BubbleSoundPlayer()
     private let windowSize = NSSize(width: 144, height: 144)
-    private let movementSpeed: CGFloat = 26
+    private let movementSpeed: CGFloat = 72
 
     private var window: NSPanel?
     private var preferences: BubblePreferences
@@ -273,11 +273,13 @@ final class FloatingBubbleController {
         }
 
         lastMovementTick = Date()
-        movementTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
+        let timer = Timer(timeInterval: 1.0 / 60.0, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 self?.tickMovement()
             }
         }
+        RunLoop.main.add(timer, forMode: .common)
+        movementTimer = timer
     }
 
     private func stopMovement() {
@@ -401,7 +403,11 @@ final class FloatingBubbleController {
             return
         }
 
-        window.setFrameOrigin(origin)
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0
+            context.allowsImplicitAnimation = false
+            window.setFrameOrigin(origin)
+        }
         if persist {
             persistCurrentState()
         }
