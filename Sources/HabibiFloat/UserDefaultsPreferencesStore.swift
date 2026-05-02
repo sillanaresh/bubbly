@@ -9,6 +9,10 @@ final class UserDefaultsPreferencesStore {
         static let lastY = "habibiFloat.lastY"
         static let clickSoundID = "habibiFloat.clickSoundID"
         static let soundVolumeID = "habibiFloat.soundVolumeID"
+        static let themeID = "habibiFloat.themeID"
+        static let moodID = "habibiFloat.moodID"
+        static let characterID = "habibiFloat.characterID"
+        static let smartPositioningEnabled = "habibiFloat.smartPositioningEnabled"
     }
 
     private let defaults: UserDefaults
@@ -22,6 +26,10 @@ final class UserDefaultsPreferencesStore {
         let isPaused = defaults.object(forKey: Key.isPaused) as? Bool ?? false
         let clickSoundID = defaults.string(forKey: Key.clickSoundID) ?? BubblePreferences.defaultClickSoundID
         let soundVolumeID = defaults.string(forKey: Key.soundVolumeID) ?? BubblePreferences.defaultSoundVolumeID
+        let themeID = defaults.string(forKey: Key.themeID) ?? BubblePreferences.defaultThemeID
+        let moodID = defaults.string(forKey: Key.moodID) ?? BubblePreferences.defaultMoodID
+        let characterID = defaults.string(forKey: Key.characterID) ?? BubblePreferences.defaultCharacterID
+        let smartPositioningEnabled = defaults.object(forKey: Key.smartPositioningEnabled) as? Bool ?? true
 
         let point: Point2D?
         if defaults.object(forKey: Key.lastX) != nil, defaults.object(forKey: Key.lastY) != nil {
@@ -35,7 +43,11 @@ final class UserDefaultsPreferencesStore {
             isPaused: isPaused,
             lastPosition: point,
             clickSoundID: clickSoundID,
-            soundVolumeID: soundVolumeID
+            soundVolumeID: soundVolumeID,
+            themeID: themeID,
+            moodID: moodID,
+            characterID: characterID,
+            smartPositioningEnabled: smartPositioningEnabled
         )
     }
 
@@ -44,6 +56,10 @@ final class UserDefaultsPreferencesStore {
         defaults.set(preferences.isPaused, forKey: Key.isPaused)
         defaults.set(preferences.clickSoundID, forKey: Key.clickSoundID)
         defaults.set(preferences.soundVolumeID, forKey: Key.soundVolumeID)
+        defaults.set(preferences.themeID, forKey: Key.themeID)
+        defaults.set(preferences.moodID, forKey: Key.moodID)
+        defaults.set(preferences.characterID, forKey: Key.characterID)
+        defaults.set(preferences.smartPositioningEnabled, forKey: Key.smartPositioningEnabled)
 
         if let lastPosition = preferences.lastPosition {
             defaults.set(lastPosition.x, forKey: Key.lastX)

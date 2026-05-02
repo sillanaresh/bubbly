@@ -24,6 +24,7 @@ final class FloatingBubbleController {
         self.preferencesStore = preferences
         self.preferences = preferences.load()
         self.visualState.isPaused = self.preferences.isPaused
+        applyAppearanceState()
         observeScreenChanges()
     }
 
@@ -43,6 +44,22 @@ final class FloatingBubbleController {
         preferences.soundVolumeID
     }
 
+    var themeID: String {
+        preferences.themeID
+    }
+
+    var moodID: String {
+        preferences.moodID
+    }
+
+    var characterID: String {
+        preferences.characterID
+    }
+
+    var smartPositioningEnabled: Bool {
+        preferences.smartPositioningEnabled
+    }
+
     func setClickSound(_ preset: BubbleSoundPreset) {
         preferences.clickSoundID = preset.rawValue
         persistCurrentState()
@@ -58,6 +75,33 @@ final class FloatingBubbleController {
         persistCurrentState()
         onStateChanged?()
         soundPlayer.play(presetID: preferences.clickSoundID, volumeID: volume.rawValue)
+    }
+
+    func setTheme(_ theme: BubbleTheme) {
+        preferences.themeID = theme.rawValue
+        applyAppearanceState()
+        persistCurrentState()
+        onStateChanged?()
+    }
+
+    func setMood(_ mood: BubbleMood) {
+        preferences.moodID = mood.rawValue
+        applyAppearanceState()
+        persistCurrentState()
+        onStateChanged?()
+    }
+
+    func setCharacter(_ character: BubbleCharacter) {
+        preferences.characterID = character.rawValue
+        applyAppearanceState()
+        persistCurrentState()
+        onStateChanged?()
+    }
+
+    func setSmartPositioningEnabled(_ enabled: Bool) {
+        preferences.smartPositioningEnabled = enabled
+        persistCurrentState()
+        onStateChanged?()
     }
 
     func restoreInitialState() {
@@ -140,6 +184,12 @@ final class FloatingBubbleController {
             preferences.lastPosition = origin.point2D
         }
         preferencesStore.save(preferences)
+    }
+
+    private func applyAppearanceState() {
+        visualState.theme = BubbleTheme.from(id: preferences.themeID)
+        visualState.mood = BubbleMood.from(id: preferences.moodID)
+        visualState.character = BubbleCharacter.from(id: preferences.characterID)
     }
 
     private func createWindowIfNeeded() {
@@ -296,15 +346,51 @@ final class FloatingBubbleController {
         }
 
         let range: CGFloat = 180
-        let proposed = NSPoint(
-            x: current.x + CGFloat.random(in: -range...range),
-            y: current.y + CGFloat.random(in: -range...range)
-        )
+        let proposed: NSPoint
+        if preferences.smartPositioningEnabled, Bool.random() {
+            proposed = smartWanderTarget(from: current, visibleFrame: visibleFrame)
+        } else {
+            proposed = NSPoint(
+                x: current.x + CGFloat.random(in: -range...range),
+                y: current.y + CGFloat.random(in: -range...range)
+            )
+        }
 
         return NSPoint(
             x: min(max(proposed.x, minX), maxX),
             y: min(max(proposed.y, minY), maxY)
         )
+    }
+
+    private func smartWanderTarget(from current: NSPoint, visibleFrame: NSRect) -> NSPoint {
+        let margin: CGFloat = 28
+        let topControlAvoidance: CGFloat = min(170, visibleFrame.height * 0.22)
+        let safeMinX = visibleFrame.minX + margin
+        let safeMaxX = visibleFrame.maxX - windowSize.width - margin
+        let safeMinY = visibleFrame.minY + margin
+        let safeMaxY = visibleFrame.maxY - windowSize.height - topControlAvoidance
+
+        guard safeMaxX > safeMinX, safeMaxY > safeMinY else {
+            return current
+        }
+
+        let sideBandWidth = min(220, max(120, visibleFrame.width * 0.16))
+        let sideTargets = [
+            NSPoint(
+                x: CGFloat.random(in: safeMinX...min(safeMinX + sideBandWidth, safeMaxX)),
+                y: CGFloat.random(in: safeMinY...safeMaxY)
+            ),
+            NSPoint(
+                x: CGFloat.random(in: max(safeMaxX - sideBandWidth, safeMinX)...safeMaxX),
+                y: CGFloat.random(in: safeMinY...safeMaxY)
+            ),
+            NSPoint(
+                x: CGFloat.random(in: safeMinX...safeMaxX),
+                y: CGFloat.random(in: safeMinY...min(safeMinY + 180, safeMaxY))
+            )
+        ]
+
+        return sideTargets.randomElement() ?? current
     }
 
     private func setWindowOrigin(_ origin: NSPoint, persist: Bool) {

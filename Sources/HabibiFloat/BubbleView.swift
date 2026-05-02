@@ -7,43 +7,32 @@ struct BubbleView: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1.0 / 12.0)) { timeline in
             let time = timeline.date.timeIntervalSinceReferenceDate
-            let breath = visualState.isPaused ? 1 : 1 + sin(time * 2.0) * 0.025
-            let bob = visualState.isPaused ? 0 : sin(time * 2.4) * 4
-            let blinkHeight = visualState.isPaused ? 14 : Self.eyeHeight(at: time)
-            let pausedTint = visualState.isPaused ? 0.72 : 1
+            let breath = visualState.isPaused ? 1 : 1 + sin(time * visualState.mood.breathRate) * visualState.mood.breathAmount
+            let bob = visualState.isPaused ? 0 : sin(time * visualState.mood.bobRate) * visualState.mood.bobAmount
+            let blinkHeight = visualState.isPaused ? 14 : visualState.mood.eyeHeight(at: time)
+            let pausedTint = visualState.isPaused ? 0.72 : visualState.mood.saturation
+            let bodyWidth = visualState.character.bodySize.width
+            let bodyHeight = visualState.character.bodySize.height
 
             ZStack {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [
-                                Color(red: 0.94, green: 0.98, blue: 1.00),
-                                Color(red: 0.44, green: 0.79, blue: 0.95),
-                                Color(red: 0.31, green: 0.57, blue: 0.88)
-                            ],
-                            center: .topLeading,
-                            startRadius: 8,
-                            endRadius: 96
-                        )
-                    )
-                    .overlay(
-                        Circle()
-                            .stroke(Color.white.opacity(0.56), lineWidth: 4)
-                            .blur(radius: 0.3)
-                    )
+                CharacterBody(character: visualState.character, colors: visualState.theme.colors)
+                    .frame(width: bodyWidth, height: bodyHeight)
                     .scaleEffect(x: breath * (pop ? 1.08 : 1.0), y: (2 - breath) * (pop ? 0.94 : 1.0))
 
                 Circle()
                     .fill(Color.white.opacity(0.42))
-                    .frame(width: 46, height: 30)
+                    .frame(width: visualState.character.highlightSize.width, height: visualState.character.highlightSize.height)
                     .blur(radius: 1)
-                    .offset(x: -31, y: -35)
+                    .offset(visualState.character.highlightOffset)
+
+                visualState.character.accent
+                    .foregroundStyle(visualState.theme.colors.last ?? .blue)
 
                 HStack(spacing: 28) {
                     Eye(height: blinkHeight)
                     Eye(height: blinkHeight)
                 }
-                .offset(y: -8)
+                .offset(visualState.mood.eyeOffset)
 
                 HStack(spacing: 38) {
                     Circle()
@@ -60,8 +49,8 @@ struct BubbleView: View {
                         Color(red: 0.08, green: 0.17, blue: 0.28).opacity(0.88),
                         style: StrokeStyle(lineWidth: 4, lineCap: .round)
                     )
-                    .frame(width: 30, height: 18)
-                    .offset(y: 19)
+                    .frame(width: visualState.mood.smileSize.width, height: visualState.mood.smileSize.height)
+                    .offset(visualState.mood.smileOffset)
 
                 if visualState.isPaused {
                     PauseBadge()
@@ -89,10 +78,6 @@ struct BubbleView: View {
         }
     }
 
-    private static func eyeHeight(at time: TimeInterval) -> CGFloat {
-        let cycle = time.truncatingRemainder(dividingBy: 4.7)
-        return cycle > 4.48 ? 3 : 19
-    }
 }
 
 private struct Eye: View {
@@ -108,6 +93,180 @@ private struct Eye: View {
                     .frame(width: 4, height: 4)
                     .offset(x: 3, y: 3)
             }
+    }
+}
+
+private struct CharacterBody: View {
+    let character: BubbleCharacter
+    let colors: [Color]
+
+    var body: some View {
+        let gradient = RadialGradient(
+            colors: colors,
+            center: .topLeading,
+            startRadius: 8,
+            endRadius: 96
+        )
+
+        switch character {
+        case .bubble, .dot, .sprout:
+            Circle()
+                .fill(gradient)
+                .overlay(
+                    Circle()
+                        .stroke(Color.white.opacity(0.56), lineWidth: 4)
+                        .blur(radius: 0.3)
+                )
+        case .star:
+            RoundedRectangle(cornerRadius: 34, style: .continuous)
+                .fill(gradient)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 34, style: .continuous)
+                        .stroke(Color.white.opacity(0.56), lineWidth: 4)
+                        .blur(radius: 0.3)
+                )
+        }
+    }
+}
+
+private extension BubbleMood {
+    var breathRate: Double {
+        switch self {
+        case .happy: 2.0
+        case .sleepy: 1.1
+        case .shy: 1.7
+        case .focus: 0.9
+        }
+    }
+
+    var breathAmount: Double {
+        switch self {
+        case .happy: 0.025
+        case .sleepy: 0.018
+        case .shy: 0.014
+        case .focus: 0.008
+        }
+    }
+
+    var bobRate: Double {
+        switch self {
+        case .happy: 2.4
+        case .sleepy: 1.0
+        case .shy: 1.5
+        case .focus: 0.7
+        }
+    }
+
+    var bobAmount: CGFloat {
+        switch self {
+        case .happy: 4
+        case .sleepy: 2
+        case .shy: 2.5
+        case .focus: 1
+        }
+    }
+
+    var saturation: Double {
+        switch self {
+        case .happy: 1.0
+        case .sleepy: 0.70
+        case .shy: 0.88
+        case .focus: 0.82
+        }
+    }
+
+    var eyeOffset: CGSize {
+        switch self {
+        case .happy: CGSize(width: 0, height: -8)
+        case .sleepy: CGSize(width: 0, height: -3)
+        case .shy: CGSize(width: -2, height: -6)
+        case .focus: CGSize(width: 0, height: -9)
+        }
+    }
+
+    var smileOffset: CGSize {
+        switch self {
+        case .happy: CGSize(width: 0, height: 19)
+        case .sleepy: CGSize(width: 0, height: 18)
+        case .shy: CGSize(width: -4, height: 18)
+        case .focus: CGSize(width: 0, height: 18)
+        }
+    }
+
+    var smileSize: CGSize {
+        switch self {
+        case .happy: CGSize(width: 30, height: 18)
+        case .sleepy: CGSize(width: 22, height: 9)
+        case .shy: CGSize(width: 18, height: 12)
+        case .focus: CGSize(width: 18, height: 7)
+        }
+    }
+
+    func eyeHeight(at time: TimeInterval) -> CGFloat {
+        switch self {
+        case .happy:
+            let cycle = time.truncatingRemainder(dividingBy: 4.7)
+            return cycle > 4.48 ? 3 : 19
+        case .sleepy:
+            return 4
+        case .shy:
+            let cycle = time.truncatingRemainder(dividingBy: 5.5)
+            return cycle > 5.2 ? 3 : 15
+        case .focus:
+            return 12
+        }
+    }
+}
+
+private extension BubbleCharacter {
+    var bodySize: CGSize {
+        switch self {
+        case .bubble: CGSize(width: 132, height: 132)
+        case .dot: CGSize(width: 118, height: 118)
+        case .sprout: CGSize(width: 126, height: 126)
+        case .star: CGSize(width: 122, height: 122)
+        }
+    }
+
+    var highlightSize: CGSize {
+        switch self {
+        case .bubble: CGSize(width: 46, height: 30)
+        case .dot: CGSize(width: 38, height: 24)
+        case .sprout: CGSize(width: 42, height: 26)
+        case .star: CGSize(width: 34, height: 22)
+        }
+    }
+
+    var highlightOffset: CGSize {
+        switch self {
+        case .bubble: CGSize(width: -31, height: -35)
+        case .dot: CGSize(width: -26, height: -30)
+        case .sprout: CGSize(width: -28, height: -32)
+        case .star: CGSize(width: -20, height: -28)
+        }
+    }
+
+    @ViewBuilder var accent: some View {
+        switch self {
+        case .bubble, .dot:
+            EmptyView()
+        case .sprout:
+            HStack(spacing: -3) {
+                Capsule()
+                    .frame(width: 18, height: 32)
+                    .rotationEffect(.degrees(-34))
+                Capsule()
+                    .frame(width: 18, height: 32)
+                    .rotationEffect(.degrees(34))
+            }
+            .opacity(0.78)
+            .offset(y: -72)
+        case .star:
+            Image(systemName: "sparkle")
+                .font(.system(size: 28, weight: .bold))
+                .opacity(0.78)
+                .offset(x: 40, y: -42)
+        }
     }
 }
 

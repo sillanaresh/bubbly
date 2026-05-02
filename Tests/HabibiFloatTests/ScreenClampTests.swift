@@ -39,4 +39,8 @@ import Testing
     #expect(preferences.lastPosition == nil)
     #expect(preferences.clickSoundID == BubblePreferences.defaultClickSoundID)
     #expect(preferences.soundVolumeID == BubblePreferences.defaultSoundVolumeID)
+    #expect(preferences.themeID == BubblePreferences.defaultThemeID)
+    #expect(preferences.moodID == BubblePreferences.defaultMoodID)
+    #expect(preferences.characterID == BubblePreferences.defaultCharacterID)
+    #expect(preferences.smartPositioningEnabled)
 }

@@ -35,6 +35,10 @@ open "dist/Habibi Float.app"
 - Double-click the bubble to pause or resume wandering.
 - Right-click the bubble for controls.
 - Use the menu bar icon to show, hide, pause, reset, change sounds, open About, or quit.
+- Use `Theme` to change the pet colors.
+- Use `Mood` to switch between Happy, Sleepy, Shy, and Focus.
+- Use `Character` to switch between Bubble, Dot, Sprout, and Star.
+- Use `Smart Positioning` to keep wandering biased away from common active app controls.
 - Use `Click Sound` to choose between Water Drop, Soft Bloop, Jelly Pop, Budak, Bubble Chime, or No Sound.
 - Use `Sound Volume` to choose Soft, Normal, or Loud.
 

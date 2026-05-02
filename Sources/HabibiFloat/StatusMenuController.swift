@@ -39,6 +39,10 @@ final class StatusMenuController: NSObject {
         let pauseTitle = controller?.isPaused == true ? "Resume" : "Pause"
         menu.addItem(item(pauseTitle, action: #selector(togglePause)))
         menu.addItem(item("Reset Position", action: #selector(resetPosition)))
+        menu.addItem(themeMenu())
+        menu.addItem(moodMenu())
+        menu.addItem(characterMenu())
+        menu.addItem(smartPositioningItem())
         menu.addItem(soundMenu())
         menu.addItem(volumeMenu())
         menu.addItem(.separator())
@@ -86,6 +90,38 @@ final class StatusMenuController: NSObject {
         refreshMenu()
     }
 
+    @objc private func chooseTheme(_ sender: NSMenuItem) {
+        guard let theme = sender.representedObject as? BubbleTheme else {
+            return
+        }
+
+        controller?.setTheme(theme)
+        refreshMenu()
+    }
+
+    @objc private func chooseMood(_ sender: NSMenuItem) {
+        guard let mood = sender.representedObject as? BubbleMood else {
+            return
+        }
+
+        controller?.setMood(mood)
+        refreshMenu()
+    }
+
+    @objc private func chooseCharacter(_ sender: NSMenuItem) {
+        guard let character = sender.representedObject as? BubbleCharacter else {
+            return
+        }
+
+        controller?.setCharacter(character)
+        refreshMenu()
+    }
+
+    @objc private func toggleSmartPositioning() {
+        controller?.setSmartPositioningEnabled(!(controller?.smartPositioningEnabled ?? true))
+        refreshMenu()
+    }
+
     @objc private func showAbout() {
         aboutWindowController.show()
     }
@@ -120,6 +156,64 @@ final class StatusMenuController: NSObject {
 
         parent.submenu = submenu
         return parent
+    }
+
+    private func themeMenu() -> NSMenuItem {
+        let parent = NSMenuItem(title: "Theme", action: nil, keyEquivalent: "")
+        let submenu = NSMenu(title: "Theme")
+        let selectedID = controller?.themeID ?? BubbleTheme.ocean.rawValue
+
+        for theme in BubbleTheme.allCases {
+            let item = NSMenuItem(title: theme.title, action: #selector(chooseTheme(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = theme
+            item.state = theme.rawValue == selectedID ? .on : .off
+            submenu.addItem(item)
+        }
+
+        parent.submenu = submenu
+        return parent
+    }
+
+    private func moodMenu() -> NSMenuItem {
+        let parent = NSMenuItem(title: "Mood", action: nil, keyEquivalent: "")
+        let submenu = NSMenu(title: "Mood")
+        let selectedID = controller?.moodID ?? BubbleMood.happy.rawValue
+
+        for mood in BubbleMood.allCases {
+            let item = NSMenuItem(title: mood.title, action: #selector(chooseMood(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = mood
+            item.state = mood.rawValue == selectedID ? .on : .off
+            submenu.addItem(item)
+        }
+
+        parent.submenu = submenu
+        return parent
+    }
+
+    private func characterMenu() -> NSMenuItem {
+        let parent = NSMenuItem(title: "Character", action: nil, keyEquivalent: "")
+        let submenu = NSMenu(title: "Character")
+        let selectedID = controller?.characterID ?? BubbleCharacter.bubble.rawValue
+
+        for character in BubbleCharacter.allCases {
+            let item = NSMenuItem(title: character.title, action: #selector(chooseCharacter(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = character
+            item.state = character.rawValue == selectedID ? .on : .off
+            submenu.addItem(item)
+        }
+
+        parent.submenu = submenu
+        return parent
+    }
+
+    private func smartPositioningItem() -> NSMenuItem {
+        let item = NSMenuItem(title: "Smart Positioning", action: #selector(toggleSmartPositioning), keyEquivalent: "")
+        item.target = self
+        item.state = controller?.smartPositioningEnabled == true ? .on : .off
+        return item
     }
 
     private func volumeMenu() -> NSMenuItem {
