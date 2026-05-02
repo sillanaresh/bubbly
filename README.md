@@ -28,6 +28,12 @@ Launch it:
 open "dist/Habibi Float.app"
 ```
 
+Build a shareable unsigned DMG:
+
+```sh
+./scripts/package-dmg.sh
+```
+
 ## Controls
 
 - Drag the bubble to move it.
@@ -44,7 +50,7 @@ open "dist/Habibi Float.app"
 
 ## Distribution
 
-DMG packaging is intentionally not included yet. The current milestone is to build and polish the local app first. Once the app behavior and look are locked, the next step is to add a DMG packaging script.
+DMG packaging creates `dist/Habibi Float.dmg`. It contains the app plus an `/Applications` shortcut.
 
 ## Friend Notes
 

@@ -1,6 +1,5 @@
 import AppKit
 import HabibiFloatCore
-import QuartzCore
 import SwiftUI
 
 @MainActor
@@ -12,12 +11,13 @@ final class FloatingBubbleController {
     private let visualState = BubbleVisualState()
     private let soundPlayer = BubbleSoundPlayer()
     private let windowSize = NSSize(width: 144, height: 144)
-    private let movementSpeed: CGFloat = 16
+    private let movementSpeed: CGFloat = 26
 
     private var window: NSPanel?
     private var preferences: BubblePreferences
-    private var movementWorkItem: DispatchWorkItem?
-    private var isMovementRunning = false
+    private var movementTimer: Timer?
+    private var movementTarget: NSPoint?
+    private var lastMovementTick = Date()
     private var lastPositionSave = Date.distantPast
 
     init(preferences: UserDefaultsPreferencesStore) {
@@ -268,36 +268,27 @@ final class FloatingBubbleController {
             return
         }
 
-        guard !isMovementRunning else {
+        guard movementTimer == nil else {
             return
         }
 
-        isMovementRunning = true
-        scheduleNextWander(after: 0.35)
+        lastMovementTick = Date()
+        movementTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                self?.tickMovement()
+            }
+        }
     }
 
     private func stopMovement() {
-        isMovementRunning = false
-        movementWorkItem?.cancel()
-        movementWorkItem = nil
+        movementTimer?.invalidate()
+        movementTimer = nil
+        movementTarget = nil
     }
 
-    private func scheduleNextWander(after delay: TimeInterval) {
-        movementWorkItem?.cancel()
-
-        let workItem = DispatchWorkItem { [weak self] in
-            Task { @MainActor in
-                self?.animateToNextWanderTarget()
-            }
-        }
-        movementWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
-    }
-
-    private func animateToNextWanderTarget() {
-        movementWorkItem = nil
-
-        guard isMovementRunning, preferences.isVisible, !preferences.isPaused, let window else {
+    private func tickMovement() {
+        guard preferences.isVisible, !preferences.isPaused, let window else {
+            lastMovementTick = Date()
             return
         }
 
@@ -305,32 +296,33 @@ final class FloatingBubbleController {
             return
         }
 
+        let now = Date()
+        let delta = min(now.timeIntervalSince(lastMovementTick), 0.12)
+        lastMovementTick = now
+
         let current = window.frame.origin
-        let target = nextWanderTarget(from: current, visibleFrame: visibleFrame)
+        let target = movementTarget ?? nextWanderTarget(from: current, visibleFrame: visibleFrame)
+        movementTarget = target
+
         let dx = target.x - current.x
         let dy = target.y - current.y
-        let distance = sqrt(dx * dx + dy * dy)
+        let distance = max(sqrt(dx * dx + dy * dy), 0.001)
+        let step = movementSpeed * delta
 
-        guard distance > 4 else {
-            scheduleNextWander(after: 1.0)
-            return
+        if distance <= step {
+            setWindowOrigin(target, persist: false)
+            movementTarget = nil
+        } else {
+            let next = NSPoint(
+                x: current.x + dx / distance * step,
+                y: current.y + dy / distance * step
+            )
+            setWindowOrigin(next, persist: false)
         }
 
-        let duration = min(max(TimeInterval(distance / movementSpeed), 4.0), 12.0)
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = duration
-            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            window.animator().setFrameOrigin(target)
-        } completionHandler: { [weak self] in
-            Task { @MainActor in
-                guard let self, self.isMovementRunning, self.preferences.isVisible, !self.preferences.isPaused else {
-                    return
-                }
-
-                self.persistCurrentState()
-                self.lastPositionSave = Date()
-                self.scheduleNextWander(after: Double.random(in: 0.5...1.2))
-            }
+        if now.timeIntervalSince(lastPositionSave) > 3 {
+            persistCurrentState()
+            lastPositionSave = now
         }
     }
 
@@ -345,7 +337,8 @@ final class FloatingBubbleController {
             return current
         }
 
-        let range: CGFloat = 180
+        let range: CGFloat = 260
+        let minimumDistance: CGFloat = 120
         let proposed: NSPoint
         if preferences.smartPositioningEnabled, Bool.random() {
             proposed = smartWanderTarget(from: current, visibleFrame: visibleFrame)
@@ -356,10 +349,20 @@ final class FloatingBubbleController {
             )
         }
 
-        return NSPoint(
+        let clamped = NSPoint(
             x: min(max(proposed.x, minX), maxX),
             y: min(max(proposed.y, minY), maxY)
         )
+
+        let dx = clamped.x - current.x
+        let dy = clamped.y - current.y
+        guard sqrt(dx * dx + dy * dy) >= minimumDistance else {
+            let fallbackX = current.x < visibleFrame.midX ? maxX : minX
+            let fallbackY = min(max(current.y + CGFloat.random(in: -range...range), minY), maxY)
+            return NSPoint(x: fallbackX, y: fallbackY)
+        }
+
+        return clamped
     }
 
     private func smartWanderTarget(from current: NSPoint, visibleFrame: NSRect) -> NSPoint {
