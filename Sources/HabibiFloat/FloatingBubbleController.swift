@@ -11,13 +11,13 @@ final class FloatingBubbleController {
     private let visualState = BubbleVisualState()
     private let soundPlayer = BubbleSoundPlayer()
     private let windowSize = NSSize(width: 144, height: 144)
-    private let movementSpeed: CGFloat = 72
+    private let movementSpeed: CGFloat = 58
 
     private var window: NSPanel?
     private var preferences: BubblePreferences
     private var movementTimer: Timer?
-    private var movementTarget: NSPoint?
-    private var lastMovementTick = Date()
+    private var wanderMotion: WanderMotion?
+    private var nextWanderAt = Date.distantPast
     private var lastPositionSave = Date.distantPast
 
     init(preferences: UserDefaultsPreferencesStore) {
@@ -272,9 +272,8 @@ final class FloatingBubbleController {
             return
         }
 
-        lastMovementTick = Date()
         let timer = Timer(timeInterval: 1.0 / 60.0, repeats: true) { [weak self] _ in
-            Task { @MainActor in
+            MainActor.assumeIsolated {
                 self?.tickMovement()
             }
         }
@@ -285,12 +284,11 @@ final class FloatingBubbleController {
     private func stopMovement() {
         movementTimer?.invalidate()
         movementTimer = nil
-        movementTarget = nil
+        wanderMotion = nil
     }
 
     private func tickMovement() {
         guard preferences.isVisible, !preferences.isPaused, let window else {
-            lastMovementTick = Date()
             return
         }
 
@@ -299,27 +297,27 @@ final class FloatingBubbleController {
         }
 
         let now = Date()
-        let delta = min(now.timeIntervalSince(lastMovementTick), 0.12)
-        lastMovementTick = now
-
         let current = window.frame.origin
-        let target = movementTarget ?? nextWanderTarget(from: current, visibleFrame: visibleFrame)
-        movementTarget = target
 
-        let dx = target.x - current.x
-        let dy = target.y - current.y
-        let distance = max(sqrt(dx * dx + dy * dy), 0.001)
-        let step = movementSpeed * delta
+        if wanderMotion == nil {
+            guard now >= nextWanderAt else {
+                return
+            }
 
-        if distance <= step {
-            setWindowOrigin(target, persist: false)
-            movementTarget = nil
-        } else {
-            let next = NSPoint(
-                x: current.x + dx / distance * step,
-                y: current.y + dy / distance * step
-            )
-            setWindowOrigin(next, persist: false)
+            wanderMotion = makeWanderMotion(from: current, visibleFrame: visibleFrame, startedAt: now)
+        }
+
+        guard let motion = wanderMotion else {
+            return
+        }
+
+        let rawProgress = min(max(now.timeIntervalSince(motion.startedAt) / motion.duration, 0), 1)
+        let easedProgress = smoothstep(rawProgress)
+        setWindowOrigin(motion.point(at: easedProgress), persist: false)
+
+        if rawProgress >= 1 {
+            wanderMotion = nil
+            nextWanderAt = now.addingTimeInterval(Double.random(in: 0.12...0.42))
         }
 
         if now.timeIntervalSince(lastPositionSave) > 3 {
@@ -328,74 +326,104 @@ final class FloatingBubbleController {
         }
     }
 
-    private func nextWanderTarget(from current: NSPoint, visibleFrame: NSRect) -> NSPoint {
-        let margin: CGFloat = 22
-        let minX = visibleFrame.minX + margin
-        let maxX = visibleFrame.maxX - windowSize.width - margin
-        let minY = visibleFrame.minY + margin
-        let maxY = visibleFrame.maxY - windowSize.height - margin
+    private func makeWanderMotion(from current: NSPoint, visibleFrame: NSRect, startedAt: Date) -> WanderMotion {
+        let bounds = wanderBounds(in: visibleFrame)
+        let target = nextWanderTarget(from: current, bounds: bounds)
+        let dx = target.x - current.x
+        let dy = target.y - current.y
+        let distance = max(sqrt(dx * dx + dy * dy), 1)
+        let duration = min(max(TimeInterval(distance / movementSpeed), 3.2), 7.2)
+
+        let perpendicular = NSPoint(x: -dy / distance, y: dx / distance)
+        let bend = CGFloat.random(in: -0.42...0.42) * min(max(distance * 0.45, 60), 180)
+        let control1 = clampedPoint(
+            NSPoint(
+                x: current.x + dx * 0.34 + perpendicular.x * bend,
+                y: current.y + dy * 0.34 + perpendicular.y * bend
+            ),
+            bounds: bounds
+        )
+        let control2 = clampedPoint(
+            NSPoint(
+                x: current.x + dx * 0.72 - perpendicular.x * bend * 0.7,
+                y: current.y + dy * 0.72 - perpendicular.y * bend * 0.7
+            ),
+            bounds: bounds
+        )
+
+        return WanderMotion(
+            start: current,
+            control1: control1,
+            control2: control2,
+            end: target,
+            startedAt: startedAt,
+            duration: duration
+        )
+    }
+
+    private func nextWanderTarget(from current: NSPoint, bounds: NSRect) -> NSPoint {
+        let minX = bounds.minX
+        let maxX = bounds.maxX
+        let minY = bounds.minY
+        let maxY = bounds.maxY
 
         guard maxX > minX, maxY > minY else {
             return current
         }
 
-        let range: CGFloat = 260
-        let minimumDistance: CGFloat = 120
-        let proposed: NSPoint
-        if preferences.smartPositioningEnabled, Bool.random() {
-            proposed = smartWanderTarget(from: current, visibleFrame: visibleFrame)
-        } else {
-            proposed = NSPoint(
-                x: current.x + CGFloat.random(in: -range...range),
-                y: current.y + CGFloat.random(in: -range...range)
+        let maximumDistance = min(max(bounds.width, bounds.height) * 0.42, 420)
+        let minimumDistance = min(max(min(bounds.width, bounds.height) * 0.20, 120), 220)
+
+        for _ in 0..<14 {
+            let angle = CGFloat.random(in: 0...(2 * .pi))
+            let distance = CGFloat.random(in: minimumDistance...max(minimumDistance + 1, maximumDistance))
+            let candidate = clampedPoint(
+                NSPoint(
+                    x: current.x + cos(angle) * distance,
+                    y: current.y + sin(angle) * distance
+                ),
+                bounds: bounds
             )
+            let dx = candidate.x - current.x
+            let dy = candidate.y - current.y
+
+            if abs(dx) >= 64, abs(dy) >= 48, sqrt(dx * dx + dy * dy) >= minimumDistance * 0.75 {
+                return candidate
+            }
         }
 
-        let clamped = NSPoint(
-            x: min(max(proposed.x, minX), maxX),
-            y: min(max(proposed.y, minY), maxY)
+        let targetXRange = current.x < bounds.midX ? bounds.midX...maxX : minX...bounds.midX
+        let targetYRange = current.y < bounds.midY ? bounds.midY...maxY : minY...bounds.midY
+        return NSPoint(
+            x: CGFloat.random(in: targetXRange),
+            y: CGFloat.random(in: targetYRange)
         )
-
-        let dx = clamped.x - current.x
-        let dy = clamped.y - current.y
-        guard sqrt(dx * dx + dy * dy) >= minimumDistance else {
-            let fallbackX = current.x < visibleFrame.midX ? maxX : minX
-            let fallbackY = min(max(current.y + CGFloat.random(in: -range...range), minY), maxY)
-            return NSPoint(x: fallbackX, y: fallbackY)
-        }
-
-        return clamped
     }
 
-    private func smartWanderTarget(from current: NSPoint, visibleFrame: NSRect) -> NSPoint {
+    private func wanderBounds(in visibleFrame: NSRect) -> NSRect {
         let margin: CGFloat = 28
-        let topControlAvoidance: CGFloat = min(170, visibleFrame.height * 0.22)
-        let safeMinX = visibleFrame.minX + margin
-        let safeMaxX = visibleFrame.maxX - windowSize.width - margin
-        let safeMinY = visibleFrame.minY + margin
-        let safeMaxY = visibleFrame.maxY - windowSize.height - topControlAvoidance
+        let topAvoidance = preferences.smartPositioningEnabled ? min(150, visibleFrame.height * 0.18) : margin
+        let minX = visibleFrame.minX + margin
+        let maxX = visibleFrame.maxX - windowSize.width - margin
+        let minY = visibleFrame.minY + margin
+        let maxY = visibleFrame.maxY - windowSize.height - topAvoidance
 
-        guard safeMaxX > safeMinX, safeMaxY > safeMinY else {
-            return current
+        guard maxX > minX, maxY > minY else {
+            return visibleFrame
         }
 
-        let sideBandWidth = min(220, max(120, visibleFrame.width * 0.16))
-        let sideTargets = [
-            NSPoint(
-                x: CGFloat.random(in: safeMinX...min(safeMinX + sideBandWidth, safeMaxX)),
-                y: CGFloat.random(in: safeMinY...safeMaxY)
-            ),
-            NSPoint(
-                x: CGFloat.random(in: max(safeMaxX - sideBandWidth, safeMinX)...safeMaxX),
-                y: CGFloat.random(in: safeMinY...safeMaxY)
-            ),
-            NSPoint(
-                x: CGFloat.random(in: safeMinX...safeMaxX),
-                y: CGFloat.random(in: safeMinY...min(safeMinY + 180, safeMaxY))
-            )
-        ]
+        return NSRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    }
 
-        return sideTargets.randomElement() ?? current
+    private func clampedPoint(_ point: NSPoint, bounds: NSRect) -> NSPoint {
+        NSPoint(
+            x: min(max(point.x, bounds.minX), bounds.maxX),
+            y: min(max(point.y, bounds.minY), bounds.maxY)
+        )
+    }
+
+    private func smoothstep(_ progress: Double) -> Double {
+        progress * progress * (3 - 2 * progress)
     }
 
     private func setWindowOrigin(_ origin: NSPoint, persist: Bool) {
@@ -452,6 +480,30 @@ final class FloatingBubbleController {
 private extension NSPoint {
     var point2D: Point2D {
         Point2D(x: x, y: y)
+    }
+}
+
+private struct WanderMotion {
+    let start: NSPoint
+    let control1: NSPoint
+    let control2: NSPoint
+    let end: NSPoint
+    let startedAt: Date
+    let duration: TimeInterval
+
+    func point(at progress: Double) -> NSPoint {
+        let t = CGFloat(progress)
+        let inverse = 1 - t
+        let x = inverse * inverse * inverse * start.x +
+            3 * inverse * inverse * t * control1.x +
+            3 * inverse * t * t * control2.x +
+            t * t * t * end.x
+        let y = inverse * inverse * inverse * start.y +
+            3 * inverse * inverse * t * control1.y +
+            3 * inverse * t * t * control2.y +
+            t * t * t * end.y
+
+        return NSPoint(x: x, y: y)
     }
 }
 
