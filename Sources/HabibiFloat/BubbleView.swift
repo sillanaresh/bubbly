@@ -5,7 +5,7 @@ struct BubbleView: View {
     @State private var pop = false
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 1.0 / 12.0)) { timeline in
+        TimelineView(.periodic(from: .now, by: 1.0 / 4.0)) { timeline in
             let time = timeline.date.timeIntervalSinceReferenceDate
             let breath = visualState.isPaused ? 1 : 1 + sin(time * visualState.mood.breathRate) * visualState.mood.breathAmount
             let bob = visualState.isPaused ? 0 : sin(time * visualState.mood.bobRate) * visualState.mood.bobAmount
@@ -22,7 +22,6 @@ struct BubbleView: View {
                 Circle()
                     .fill(Color.white.opacity(0.42))
                     .frame(width: visualState.character.highlightSize.width, height: visualState.character.highlightSize.height)
-                    .blur(radius: 1)
                     .offset(visualState.character.highlightOffset)
 
                 visualState.character.accent
@@ -115,7 +114,6 @@ private struct CharacterBody: View {
                 .overlay(
                     Circle()
                         .stroke(Color.white.opacity(0.56), lineWidth: 4)
-                        .blur(radius: 0.3)
                 )
         case .star:
             RoundedRectangle(cornerRadius: 34, style: .continuous)
@@ -123,7 +121,6 @@ private struct CharacterBody: View {
                 .overlay(
                     RoundedRectangle(cornerRadius: 34, style: .continuous)
                         .stroke(Color.white.opacity(0.56), lineWidth: 4)
-                        .blur(radius: 0.3)
                 )
         }
     }
@@ -287,7 +284,6 @@ private struct PauseBadge: View {
         ZStack {
             Circle()
                 .fill(Color.white.opacity(0.78))
-                .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
             HStack(spacing: 4) {
                 RoundedRectangle(cornerRadius: 2)
                     .fill(Color(red: 0.16, green: 0.31, blue: 0.48))

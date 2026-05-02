@@ -11,7 +11,7 @@ final class FloatingBubbleController {
     private let visualState = BubbleVisualState()
     private let soundPlayer = BubbleSoundPlayer()
     private let windowSize = NSSize(width: 144, height: 144)
-    private let movementSpeed: CGFloat = 58
+    private let movementSpeed: CGFloat = 48
 
     private var window: NSPanel?
     private var preferences: BubblePreferences
@@ -272,7 +272,7 @@ final class FloatingBubbleController {
             return
         }
 
-        let timer = Timer(timeInterval: 1.0 / 60.0, repeats: true) { [weak self] _ in
+        let timer = Timer(timeInterval: 1.0 / 24.0, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated {
                 self?.tickMovement()
             }
@@ -317,7 +317,7 @@ final class FloatingBubbleController {
 
         if rawProgress >= 1 {
             wanderMotion = nil
-            nextWanderAt = now.addingTimeInterval(Double.random(in: 0.12...0.42))
+            nextWanderAt = now.addingTimeInterval(Double.random(in: 7.0...12.0))
         }
 
         if now.timeIntervalSince(lastPositionSave) > 3 {
@@ -431,11 +431,7 @@ final class FloatingBubbleController {
             return
         }
 
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0
-            context.allowsImplicitAnimation = false
-            window.setFrameOrigin(origin)
-        }
+        window.setFrameOrigin(origin)
         if persist {
             persistCurrentState()
         }
