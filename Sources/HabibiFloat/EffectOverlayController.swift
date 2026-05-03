@@ -31,7 +31,7 @@ final class EffectOverlayController {
         self.panel = panel
 
         closeTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(2.1))
+            try? await Task.sleep(for: .seconds(2.5))
             guard !Task.isCancelled else {
                 return
             }
@@ -43,4 +43,3 @@ final class EffectOverlayController {
         }
     }
 }
-
