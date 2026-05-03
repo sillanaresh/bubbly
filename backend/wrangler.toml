@@ -1,0 +1,17 @@
+name = "habibi-float-api"
+main = "src/index.ts"
+compatibility_date = "2026-05-03"
+
+[vars]
+OPENROUTER_MODEL = "openrouter/free"
+DAILY_DEVICE_LIMIT = "30"
+GLOBAL_DAILY_LIMIT = "1000"
+MAX_INPUT_CHARS = "8000"
+MAX_OUTPUT_TOKENS = "350"
+APP_TITLE = "Habibi Float"
+APP_REFERER = "https://habibi-float.local"
+
+[[d1_databases]]
+binding = "HABIBI_DB"
+database_name = "habibi-float-api-db"
+database_id = "replace-after-cloudflare-d1-create"
