@@ -82,7 +82,7 @@ Download:
 
 `dist/Bubbly.dmg`
 
-Because this early version is not notarized yet, macOS may warn that it cannot verify the app. The first time, right-click the app and choose **Open**.
+Because this early version is not notarized yet, macOS may warn that it cannot verify the app. If you see **"Bubbly" Not Opened**, click **Done**, then right-click the app and choose **Open**. Do not choose **Move to Bin**.
 
 ## Current Status
 
