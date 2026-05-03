@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Bubbly Carefree Icon</title>
+  <desc id="desc">A smiling blue floating bubble companion with soft highlights.</desc>
+  <defs>
+    <radialGradient id="body" cx="28%" cy="24%" r="78%">
+      <stop offset="0%" stop-color="#a7e1f2"/>
+      <stop offset="45%" stop-color="#70b9e7"/>
+      <stop offset="100%" stop-color="#5c89ce"/>
+    </radialGradient>
+    <radialGradient id="shine" cx="35%" cy="28%" r="68%">
+      <stop offset="0%" stop-color="#f4fdff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#d7f5ff" stop-opacity="0.45"/>
+    </radialGradient>
+    <filter id="softShadow" x="-28%" y="-22%" width="156%" height="164%">
+      <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#2d5e99" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#softShadow)">
+    <circle cx="256" cy="256" r="180" fill="url(#body)"/>
+    <circle cx="256" cy="256" r="174" fill="none" stroke="#ffffff" stroke-opacity="0.58" stroke-width="8"/>
+    <circle cx="174" cy="173" r="43" fill="url(#shine)"/>
+    <circle cx="356" cy="135" r="49" fill="#ffffff" fill-opacity="0.78"/>
+    <circle cx="207" cy="240" r="17" fill="#17283f"/>
+    <circle cx="305" cy="240" r="17" fill="#17283f"/>
+    <circle cx="201" cy="235" r="5" fill="#ffffff" fill-opacity="0.9"/>
+    <circle cx="299" cy="235" r="5" fill="#ffffff" fill-opacity="0.9"/>
+    <circle cx="171" cy="305" r="18" fill="#c98bcb" fill-opacity="0.58"/>
+    <circle cx="341" cy="305" r="18" fill="#c98bcb" fill-opacity="0.58"/>
+    <path d="M213 307c25 34 61 34 86 0" fill="none" stroke="#17283f" stroke-width="14" stroke-linecap="round"/>
+  </g>
+</svg>
