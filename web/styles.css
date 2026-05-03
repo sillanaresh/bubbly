@@ -331,38 +331,6 @@ h1 {
   border-radius: 0 0 999px 999px;
 }
 
-.desktop-badge {
-  position: absolute;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 62px;
-  min-height: 42px;
-  padding: 0 14px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 16px 38px rgba(44, 79, 114, 0.15);
-  color: #536171;
-  font-size: 0.88rem;
-  font-weight: 760;
-}
-
-.chat-badge {
-  right: 0;
-  bottom: 20%;
-  animation: badgeFloat 5.4s ease-in-out infinite;
-}
-
-.rain-badge {
-  left: 4%;
-  bottom: 5%;
-  background: rgba(239, 250, 255, 0.88);
-  animation: badgeFloat 6.2s ease-in-out infinite reverse;
-}
-
-
 .preview-section,
 .features-section {
   padding: 70px 0;
@@ -521,24 +489,93 @@ h2 {
   color: var(--muted);
 }
 
-.effect-strip {
+.effect-visual {
   position: absolute;
   left: 34px;
   right: 34px;
   bottom: 30px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  height: 72px;
+  pointer-events: none;
 }
 
-.effect-strip span {
-  padding: 8px 12px;
-  border: 1px solid rgba(43, 69, 96, 0.1);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.7);
-  color: #50606f;
-  font-size: 0.9rem;
-  font-weight: 680;
+.drop,
+.cloud,
+.spark {
+  position: absolute;
+  display: block;
+}
+
+.drop {
+  width: 9px;
+  height: 18px;
+  border-radius: 999px 999px 999px 2px;
+  background: linear-gradient(180deg, rgba(112, 185, 231, 0.76), rgba(68, 139, 204, 0.78));
+  transform: rotate(18deg);
+  opacity: 0.76;
+  animation: rainFall 2.7s ease-in-out infinite;
+}
+
+.drop.one {
+  left: 5%;
+  top: 10px;
+}
+
+.drop.two {
+  left: 14%;
+  top: 32px;
+  animation-delay: -0.8s;
+}
+
+.drop.three {
+  left: 25%;
+  top: 4px;
+  animation-delay: -1.6s;
+}
+
+.cloud {
+  width: 64px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(219, 244, 255, 0.78);
+  box-shadow:
+    14px -8px 0 rgba(229, 249, 255, 0.86),
+    30px 0 0 rgba(207, 236, 250, 0.72);
+  opacity: 0.9;
+  animation: cloudDrift 7.4s ease-in-out infinite;
+}
+
+.cloud.one {
+  left: 43%;
+  top: 22px;
+}
+
+.cloud.two {
+  right: 13%;
+  top: 2px;
+  transform: scale(0.72);
+  animation-delay: -2s;
+}
+
+.spark {
+  width: 15px;
+  aspect-ratio: 1;
+  background: #ffd985;
+  clip-path: polygon(50% 0, 62% 36%, 100% 50%, 62% 64%, 50% 100%, 38% 64%, 0 50%, 38% 36%);
+  opacity: 0.82;
+  animation: sparklePulse 2.8s ease-in-out infinite;
+}
+
+.spark.one {
+  right: 26%;
+  top: 42px;
+}
+
+.spark.two {
+  right: 5%;
+  top: 24px;
+  background: #ffb5cc;
+  transform: scale(0.72);
+  animation-delay: -1.2s;
 }
 
 .feature-grid {
@@ -575,6 +612,10 @@ h2 {
 
 .feature-card.quiet-card {
   background: rgba(246, 255, 250, 0.86);
+}
+
+.feature-card.controls-card {
+  background: rgba(244, 251, 255, 0.86);
 }
 
 .feature-card h3 {
@@ -679,14 +720,40 @@ h2 {
   }
 }
 
-@keyframes badgeFloat {
+@keyframes rainFall {
   0%,
   100% {
-    transform: translateY(0);
+    transform: translateY(-4px) rotate(18deg);
+    opacity: 0.35;
   }
 
   50% {
-    transform: translateY(-8px);
+    transform: translateY(14px) rotate(18deg);
+    opacity: 0.82;
+  }
+}
+
+@keyframes cloudDrift {
+  0%,
+  100% {
+    transform: translateX(-8px);
+  }
+
+  50% {
+    transform: translateX(12px);
+  }
+}
+
+@keyframes sparklePulse {
+  0%,
+  100% {
+    transform: scale(0.75) rotate(0deg);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: scale(1) rotate(18deg);
+    opacity: 0.9;
   }
 }
 
@@ -823,7 +890,7 @@ h2 {
     width: calc(100% - 44px);
   }
 
-  .effect-strip {
+  .effect-visual {
     left: 22px;
     right: 22px;
   }
