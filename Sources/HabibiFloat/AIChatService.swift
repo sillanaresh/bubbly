@@ -25,7 +25,7 @@ final class AIChatService {
             if settings.sponsoredEndpoint == nil {
                 return AIChatStatus(mode: .offline, detail: "Bubbly Free is not configured")
             }
-            return AIChatStatus(mode: .sponsored, detail: "30 free messages")
+            return AIChatStatus(mode: .sponsored, detail: "50 free messages")
         case .openRouterKey:
             if hasOpenRouterKey {
                 return AIChatStatus(mode: .openRouterKey, detail: "Direct OpenRouter connection")

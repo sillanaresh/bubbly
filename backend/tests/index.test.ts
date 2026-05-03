@@ -23,7 +23,7 @@ function env(overrides: Partial<Env> = {}): Env {
     HABIBI_USAGE: new InMemoryKV() as unknown as KVNamespace,
     OPENROUTER_API_KEY: "test-key",
     OPENROUTER_MODEL: "openrouter/free",
-    DAILY_DEVICE_LIMIT: "30",
+    DAILY_DEVICE_LIMIT: "50",
     GLOBAL_DAILY_LIMIT: "1000",
     MAX_INPUT_CHARS: "8000",
     MAX_OUTPUT_TOKENS: "350",
@@ -101,7 +101,7 @@ describe("Habibi Float backend", () => {
     expect(response.status).toBe(200);
     expect(json.message).toBe("Hello from Habibi.");
     expect(json.model).toBe("upstream/free-model");
-    expect(json.remainingToday).toBe(29);
+    expect(json.remainingToday).toBe(49);
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 

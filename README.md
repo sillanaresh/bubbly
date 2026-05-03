@@ -26,7 +26,7 @@ Everything is intentionally small and lightweight. Bubbly should feel present, n
 
 Bubbly includes a small chat panel for quick questions, ideas, and friendly back-and-forth.
 
-Bubbly Free gives casual access with 30 free messages.
+Bubbly Free gives casual access with 50 free messages.
 
 Bubbly is designed to answer as itself. If you ask who it is, it should say it is Bubbly from Habibi Float, not some random model name.
 

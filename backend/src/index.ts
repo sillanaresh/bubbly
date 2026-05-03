@@ -45,7 +45,7 @@ interface QuotaReservation {
 
 const OPENROUTER_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions";
 const DEFAULT_MODEL = "openrouter/free";
-const DEFAULT_DAILY_DEVICE_LIMIT = 30;
+const DEFAULT_DAILY_DEVICE_LIMIT = 50;
 const DEFAULT_GLOBAL_DAILY_LIMIT = 1000;
 const DEFAULT_MAX_INPUT_CHARS = 8000;
 const DEFAULT_MAX_OUTPUT_TOKENS = 350;
