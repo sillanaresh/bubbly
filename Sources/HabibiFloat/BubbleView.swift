@@ -2,6 +2,7 @@ import SwiftUI
 
 struct BubbleView: View {
     @ObservedObject var visualState: BubbleVisualState
+    var showsBadges = true
     @State private var pop = false
 
     var body: some View {
@@ -51,13 +52,13 @@ struct BubbleView: View {
                     .frame(width: visualState.mood.smileSize.width, height: visualState.mood.smileSize.height)
                     .offset(visualState.mood.smileOffset)
 
-                if visualState.isPaused {
+                if showsBadges, visualState.isPaused {
                     PauseBadge()
                         .frame(width: 38, height: 38)
                         .offset(x: 44, y: -46)
                 }
 
-                ForEach(visualState.featureMode.enabledActions, id: \.self) { action in
+                ForEach(showsBadges ? visualState.featureMode.enabledActions : [], id: \.self) { action in
                     ActionBadge(action: action, isOpen: action == .chat && visualState.isChatOpen)
                         .frame(width: 34, height: 34)
                         .offset(action.offset)

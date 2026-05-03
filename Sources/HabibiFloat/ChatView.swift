@@ -20,7 +20,7 @@ struct ChatView: View {
     private var header: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
-                BubbleView(visualState: visualState)
+                BubbleView(visualState: visualState, showsBadges: false)
                     .scaleEffect(0.30)
                     .frame(width: 42, height: 42)
                     .allowsHitTesting(false)
