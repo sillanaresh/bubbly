@@ -27,7 +27,12 @@ final class AIChatViewModel: ObservableObject {
         self.settings = settings
         self.keyStore = keyStore
         self.service = service
-        self.selectedMode = settings.providerMode
+        if AIChatProviderMode.userSelectable.contains(settings.providerMode) {
+            self.selectedMode = settings.providerMode
+        } else {
+            self.selectedMode = .sponsored
+            settings.providerMode = .sponsored
+        }
         self.endpointDraft = settings.sponsoredEndpoint?.absoluteString ?? ""
         self.modelDraft = settings.openRouterModel
         let storedKeyExists = (try? keyStore.readKey()?.isEmpty == false) ?? false

@@ -34,7 +34,8 @@ final class FloatingBubbleController {
                 settings: chatSettings,
                 keyStore: keyStore,
                 service: AIChatService(settings: chatSettings, keyStore: keyStore)
-            )
+            ),
+            visualState: visualState
         )
         self.visualState.isPaused = self.preferences.isPaused
         applyAppearanceState()

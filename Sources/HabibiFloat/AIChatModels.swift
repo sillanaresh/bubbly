@@ -34,7 +34,8 @@ enum AIChatProviderMode: String, CaseIterable {
     case openRouterKey
     case offline
 
-    static let userSelectable: [AIChatProviderMode] = [.sponsored, .openRouterKey]
+    // Keep Advanced/BYOK support in code for a future release, but hide it from v1.
+    static let userSelectable: [AIChatProviderMode] = [.sponsored]
 
     var title: String {
         switch self {

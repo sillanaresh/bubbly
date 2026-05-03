@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ChatView: View {
     @ObservedObject var viewModel: AIChatViewModel
+    @ObservedObject var visualState: BubbleVisualState
     let onClose: () -> Void
 
     var body: some View {
@@ -19,7 +20,10 @@ struct ChatView: View {
     private var header: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
-                chatGlyph
+                BubbleView(visualState: visualState)
+                    .scaleEffect(0.30)
+                    .frame(width: 42, height: 42)
+                    .allowsHitTesting(false)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(viewModel.status.mode.title)
@@ -32,16 +36,18 @@ struct ChatView: View {
 
                 Spacer()
 
-                Picker("", selection: Binding(
-                    get: { viewModel.selectedMode },
-                    set: { viewModel.selectMode($0) }
-                )) {
-                    ForEach(AIChatProviderMode.userSelectable, id: \.self) { mode in
-                        Text(mode.title).tag(mode)
+                if AIChatProviderMode.userSelectable.count > 1 {
+                    Picker("", selection: Binding(
+                        get: { viewModel.selectedMode },
+                        set: { viewModel.selectMode($0) }
+                    )) {
+                        ForEach(AIChatProviderMode.userSelectable, id: \.self) { mode in
+                            Text(mode.title).tag(mode)
+                        }
                     }
+                    .labelsHidden()
+                    .frame(width: 156)
                 }
-                .labelsHidden()
-                .frame(width: 156)
 
                 Button(action: onClose) {
                     Image(systemName: "xmark")
@@ -198,62 +204,6 @@ struct ChatView: View {
         return viewModel.status.detail
     }
 
-    private var chatGlyph: some View {
-        ZStack {
-            Circle()
-                .fill(
-                    RadialGradient(
-                        colors: [
-                            Color(red: 0.96, green: 0.99, blue: 1.0),
-                            Color(red: 0.50, green: 0.82, blue: 0.96),
-                            Color(red: 0.35, green: 0.59, blue: 0.88)
-                        ],
-                        center: .topLeading,
-                        startRadius: 4,
-                        endRadius: 30
-                    )
-                )
-                .overlay(
-                    Circle()
-                        .stroke(Color.white.opacity(0.56), lineWidth: 2)
-                )
-
-            Circle()
-                .fill(Color.white.opacity(0.42))
-                .frame(width: 15, height: 10)
-                .offset(x: -9, y: -10)
-
-            HStack(spacing: 7) {
-                Circle()
-                    .fill(Color(red: 0.06, green: 0.13, blue: 0.22))
-                    .frame(width: 5, height: 7)
-                Circle()
-                    .fill(Color(red: 0.06, green: 0.13, blue: 0.22))
-                    .frame(width: 5, height: 7)
-            }
-            .offset(y: -2)
-
-            HStack(spacing: 16) {
-                Circle()
-                    .fill(Color(red: 1.0, green: 0.44, blue: 0.64).opacity(0.28))
-                    .frame(width: 7, height: 5)
-                Circle()
-                    .fill(Color(red: 1.0, green: 0.44, blue: 0.64).opacity(0.28))
-                    .frame(width: 7, height: 5)
-            }
-            .offset(y: 8)
-
-            ChatSmile()
-                .stroke(
-                    Color(red: 0.06, green: 0.13, blue: 0.22),
-                    style: StrokeStyle(lineWidth: 2.0, lineCap: .round)
-                )
-                .frame(width: 13, height: 8)
-                .offset(y: 6)
-        }
-        .frame(width: 34, height: 34)
-    }
-
     private func messageBubble(_ message: AIChatMessage) -> some View {
         let isUser = message.role == .user
 
@@ -270,7 +220,7 @@ struct ChatView: View {
                 .foregroundStyle(isUser ? Color.white : Color(red: 0.09, green: 0.20, blue: 0.31))
                 .background(
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(isUser ? Color.accentColor : Color(red: 0.90, green: 0.96, blue: 1.0))
+                        .fill(isUser ? themePrimaryColor : themeReplyColor)
                 )
 
             if !isUser {
@@ -294,16 +244,13 @@ struct ChatView: View {
 
         return Text(message.content)
     }
-}
 
-private struct ChatSmile: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: rect.minX, y: rect.midY))
-        path.addQuadCurve(
-            to: CGPoint(x: rect.maxX, y: rect.midY),
-            control: CGPoint(x: rect.midX, y: rect.maxY)
-        )
-        return path
+    private var themePrimaryColor: Color {
+        visualState.theme.colors.last ?? Color.accentColor
+    }
+
+    private var themeReplyColor: Color {
+        let colors = visualState.theme.colors
+        return colors.count > 1 ? colors[1].opacity(0.24) : Color(red: 0.90, green: 0.96, blue: 1.0)
     }
 }

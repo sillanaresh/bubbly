@@ -4,11 +4,13 @@ import SwiftUI
 @MainActor
 final class ChatPanelController: NSObject, NSWindowDelegate {
     private let viewModel: AIChatViewModel
+    private let visualState: BubbleVisualState
     private var panel: NSPanel?
     private var onClose: (() -> Void)?
 
-    init(viewModel: AIChatViewModel) {
+    init(viewModel: AIChatViewModel, visualState: BubbleVisualState) {
         self.viewModel = viewModel
+        self.visualState = visualState
     }
 
     var isOpen: Bool {
@@ -41,7 +43,7 @@ final class ChatPanelController: NSObject, NSWindowDelegate {
         panel.maxSize = NSSize(width: 560, height: 720)
         panel.titlebarAppearsTransparent = true
         panel.delegate = self
-        panel.contentView = NSHostingView(rootView: ChatView(viewModel: viewModel) { [weak self] in
+        panel.contentView = NSHostingView(rootView: ChatView(viewModel: viewModel, visualState: visualState) { [weak self] in
             self?.close()
         })
         panel.setFrameOrigin(origin(attachedTo: bubbleFrame, panelSize: size, visibleFrame: visibleFrame))

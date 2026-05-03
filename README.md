@@ -26,10 +26,7 @@ Everything is intentionally small and lightweight. Bubbly should feel present, n
 
 Bubbly includes a small chat panel for quick questions, ideas, and friendly back-and-forth.
 
-There are two chat options:
-
-- **Bubbly Free** gives casual access with 30 free messages.
-- **Advanced** lets someone use their own OpenRouter key and model id.
+Bubbly Free gives casual access with 30 free messages.
 
 Bubbly is designed to answer as itself. If you ask who it is, it should say it is Bubbly from Habibi Float, not some random model name.
 
@@ -75,7 +72,7 @@ Bubbly is local-first in spirit.
 
 Its position, theme, mood, sounds, feature mode, and other preferences stay on the Mac. Chat only uses the network when a message is sent.
 
-If someone uses Advanced chat, their OpenRouter key is saved in macOS Keychain.
+Advanced model selection is planned for later. For now, Bubbly keeps chat simple with Bubbly Free.
 
 ## Sharing Bubbly
 
@@ -98,7 +95,7 @@ Bubbly is still early, but already includes:
 - bubbly click sounds
 - menu bar controls
 - compact chat panel
-- Bubbly Free and Advanced chat modes
+- Bubbly Free chat
 - playful desktop effects
 - DMG packaging for sharing
 
@@ -112,8 +109,8 @@ Near-term ideas:
 - richer Bubbly expressions
 - cleaner onboarding
 - a public download page
+- optional advanced model selection
 - smoother update flow
 - more companion actions around the bubble
 
 Longer term, Bubbly could become a personal assistant that feels native to the desktop instead of trapped inside a browser tab.
-
