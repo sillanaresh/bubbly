@@ -14,7 +14,10 @@ let package = Package(
         .target(name: "HabibiFloatCore"),
         .executableTarget(
             name: "HabibiFloat",
-            dependencies: ["HabibiFloatCore"]
+            dependencies: ["HabibiFloatCore"],
+            linkerSettings: [
+                .linkedFramework("Security")
+            ]
         ),
         .testTarget(
             name: "HabibiFloatCoreTests",

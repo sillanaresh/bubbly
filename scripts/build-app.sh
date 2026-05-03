@@ -10,6 +10,7 @@ CONTENTS_PATH="${APP_PATH}/Contents"
 MACOS_PATH="${CONTENTS_PATH}/MacOS"
 RESOURCES_PATH="${CONTENTS_PATH}/Resources"
 ICON_PATH="${RESOURCES_PATH}/AppIcon.icns"
+CHAT_BACKEND_URL="${HABIBI_CHAT_BACKEND_URL:-}"
 
 swift build -c release
 
@@ -53,6 +54,10 @@ cat > "${CONTENTS_PATH}/Info.plist" <<PLIST
 </dict>
 </plist>
 PLIST
+
+if [ -n "${CHAT_BACKEND_URL}" ]; then
+  /usr/libexec/PlistBuddy -c "Add :HabibiChatBackendURL string ${CHAT_BACKEND_URL}" "${CONTENTS_PATH}/Info.plist"
+fi
 
 chmod +x "${MACOS_PATH}/${APP_NAME}"
 codesign --force --sign - "${APP_PATH}" >/dev/null
