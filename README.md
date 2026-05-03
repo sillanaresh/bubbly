@@ -6,6 +6,12 @@ Bubbly lives on your desktop as a soft, playful little presence. It floats while
 
 It is not trying to become another full-screen productivity app. Bubbly is meant to feel like something small, alive, and useful that quietly belongs on your screen.
 
+## Product Demo
+
+[![Bubbly floating on a Mac desktop](web/assets/bubbly-demo-poster.png)](web/assets/bubbly-demo.mp4)
+
+[Watch the Bubbly demo video](web/assets/bubbly-demo.mp4)
+
 ## Why Bubbly Exists
 
 Most desktop tools are either serious utilities or distracting toys. Bubbly sits between those worlds.
