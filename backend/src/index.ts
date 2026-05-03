@@ -282,15 +282,37 @@ async function requestOpenRouter(messages: ChatMessage[], env: Env): Promise<{ m
     throw new Error(upstreamMessage || "OpenRouter request failed.");
   }
 
-  const content = data?.choices?.[0]?.message?.content?.trim();
+  const content = cleanAssistantMessage(data?.choices?.[0]?.message?.content);
   if (!content) {
-    throw new Error("Chat service returned an empty response.");
+    throw new Error("Bubbly had trouble answering. Please try again.");
   }
 
   return {
     message: content,
     model: data?.model || model
   };
+}
+
+function cleanAssistantMessage(content: string | undefined): string | undefined {
+  if (!content) {
+    return undefined;
+  }
+
+  let text = content.trim();
+  if (!text) {
+    return undefined;
+  }
+
+  text = text.replace(/<think>[\s\S]*?<\/think>/gi, "");
+  text = text.replace(/<\/?think>/gi, "");
+
+  const cleaned = text
+    .split("\n")
+    .filter((line) => !line.trim().toLowerCase().startsWith("thinking about how to respond"))
+    .join("\n")
+    .trim();
+
+  return cleaned || undefined;
 }
 
 async function reserveQuota(
@@ -412,5 +434,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export const testing = {
   parseChatRequest,
   reserveQuota,
-  readPositiveInt
+  readPositiveInt,
+  cleanAssistantMessage
 };

@@ -85,7 +85,7 @@ struct ChatView: View {
                         HStack {
                             ProgressView()
                                 .controlSize(.small)
-                            Text("Thinking")
+                            Text("Bubbly is typing")
                                 .font(.system(size: 12))
                                 .foregroundStyle(.secondary)
                             Spacer()
@@ -107,9 +107,15 @@ struct ChatView: View {
     private var composer: some View {
         VStack(spacing: 8) {
             if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage)
+                Label(errorMessage, systemImage: "exclamationmark.circle")
                     .font(.system(size: 12))
-                    .foregroundStyle(.red)
+                    .foregroundStyle(Color(red: 0.72, green: 0.16, blue: 0.18))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 7)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Color(red: 1.0, green: 0.93, blue: 0.93))
+                    )
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
@@ -149,20 +155,33 @@ struct ChatView: View {
         case .sponsored:
             EmptyView()
         case .openRouterKey:
-            HStack(spacing: 8) {
-                SecureField(viewModel.hasOpenRouterKey ? "Saved key" : "OpenRouter key", text: $viewModel.keyDraft)
-                    .textFieldStyle(.roundedBorder)
-                Button("Save") {
-                    viewModel.saveOpenRouterKey()
+            VStack(spacing: 8) {
+                HStack(spacing: 8) {
+                    SecureField(viewModel.hasOpenRouterKey ? "Saved key" : "OpenRouter key", text: $viewModel.keyDraft)
+                        .textFieldStyle(.roundedBorder)
+                    Button("Save Key") {
+                        viewModel.saveOpenRouterKey()
+                    }
+                    Button {
+                        viewModel.removeOpenRouterKey()
+                    } label: {
+                        Image(systemName: "key.slash")
+                    }
+                    .buttonStyle(.borderless)
+                    .disabled(!viewModel.hasOpenRouterKey)
+                    .help("Remove OpenRouter key")
                 }
-                Button {
-                    viewModel.removeOpenRouterKey()
-                } label: {
-                    Image(systemName: "key.slash")
+
+                HStack(spacing: 8) {
+                    TextField("Model", text: $viewModel.modelDraft)
+                        .textFieldStyle(.roundedBorder)
+                        .onSubmit {
+                            viewModel.saveOpenRouterModel()
+                        }
+                    Button("Save Model") {
+                        viewModel.saveOpenRouterModel()
+                    }
                 }
-                .buttonStyle(.borderless)
-                .disabled(!viewModel.hasOpenRouterKey)
-                .help("Remove OpenRouter key")
             }
         case .offline:
             EmptyView()
@@ -194,23 +213,43 @@ struct ChatView: View {
                         endRadius: 30
                     )
                 )
+                .overlay(
+                    Circle()
+                        .stroke(Color.white.opacity(0.56), lineWidth: 2)
+                )
+
+            Circle()
+                .fill(Color.white.opacity(0.42))
+                .frame(width: 15, height: 10)
+                .offset(x: -9, y: -10)
+
             HStack(spacing: 7) {
                 Circle()
                     .fill(Color(red: 0.06, green: 0.13, blue: 0.22))
-                    .frame(width: 5, height: 6)
+                    .frame(width: 5, height: 7)
                 Circle()
                     .fill(Color(red: 0.06, green: 0.13, blue: 0.22))
-                    .frame(width: 5, height: 6)
+                    .frame(width: 5, height: 7)
             }
             .offset(y: -2)
+
+            HStack(spacing: 16) {
+                Circle()
+                    .fill(Color(red: 1.0, green: 0.44, blue: 0.64).opacity(0.28))
+                    .frame(width: 7, height: 5)
+                Circle()
+                    .fill(Color(red: 1.0, green: 0.44, blue: 0.64).opacity(0.28))
+                    .frame(width: 7, height: 5)
+            }
+            .offset(y: 8)
 
             ChatSmile()
                 .stroke(
                     Color(red: 0.06, green: 0.13, blue: 0.22),
-                    style: StrokeStyle(lineWidth: 1.8, lineCap: .round)
+                    style: StrokeStyle(lineWidth: 2.0, lineCap: .round)
                 )
-                .frame(width: 12, height: 7)
-                .offset(y: 7)
+                .frame(width: 13, height: 8)
+                .offset(y: 6)
         }
         .frame(width: 34, height: 34)
     }

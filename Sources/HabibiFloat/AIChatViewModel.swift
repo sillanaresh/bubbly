@@ -11,6 +11,7 @@ final class AIChatViewModel: ObservableObject {
     @Published var hasOpenRouterKey = false
     @Published var keyDraft = ""
     @Published var endpointDraft = ""
+    @Published var modelDraft = ""
     @Published var modelDetail: String?
     @Published var remainingToday: Int?
 
@@ -28,6 +29,7 @@ final class AIChatViewModel: ObservableObject {
         self.service = service
         self.selectedMode = settings.providerMode
         self.endpointDraft = settings.sponsoredEndpoint?.absoluteString ?? ""
+        self.modelDraft = settings.openRouterModel
         let storedKeyExists = (try? keyStore.readKey()?.isEmpty == false) ?? false
         self.hasOpenRouterKey = storedKeyExists
         self.status = service.status(hasOpenRouterKey: storedKeyExists)
@@ -59,6 +61,13 @@ final class AIChatViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    func saveOpenRouterModel() {
+        settings.openRouterModel = modelDraft
+        modelDraft = settings.openRouterModel
+        errorMessage = nil
+        refreshStatus()
     }
 
     func removeOpenRouterKey() {

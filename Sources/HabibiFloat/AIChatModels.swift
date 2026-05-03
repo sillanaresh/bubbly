@@ -66,7 +66,7 @@ enum AIChatError: LocalizedError, Equatable {
         case .offline:
             "Chat is offline right now."
         case .invalidResponse:
-            "Chat returned an unexpected response."
+            "Bubbly had trouble answering. Please try again."
         case .requestFailed(let message):
             message
         }

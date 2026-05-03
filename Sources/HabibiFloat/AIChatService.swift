@@ -67,7 +67,7 @@ final class AIChatService {
 
     private func sendOpenRouter(messages: [AIChatWireMessage], apiKey: String) async throws -> AIChatResult {
         let payload = OpenRouterRequest(
-            model: "openrouter/free",
+            model: settings.openRouterModel,
             messages: [AIChatWireMessage(role: .system, content: systemPrompt)] + messages.filter { $0.role != .system },
             maxTokens: 700
         )
@@ -81,7 +81,7 @@ final class AIChatService {
             ]
         )
 
-        guard let message = response.choices.first?.message.content, !message.isEmpty else {
+        guard let message = Self.cleanedAssistantMessage(response.choices.first?.message.content), !message.isEmpty else {
             throw AIChatError.invalidResponse
         }
 
@@ -130,6 +130,32 @@ final class AIChatService {
 
     private var appVersion: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1.0"
+    }
+
+    private static func cleanedAssistantMessage(_ content: String?) -> String? {
+        guard var text = content?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else {
+            return nil
+        }
+
+        while let start = text.range(of: "<think>", options: .caseInsensitive),
+              let end = text.range(of: "</think>", options: .caseInsensitive),
+              start.lowerBound < end.upperBound {
+            text.removeSubrange(start.lowerBound..<end.upperBound)
+        }
+
+        text = text.replacingOccurrences(of: "</think>", with: "", options: .caseInsensitive)
+        text = text.replacingOccurrences(of: "<think>", with: "", options: .caseInsensitive)
+
+        let cleanedLines = text
+            .split(separator: "\n", omittingEmptySubsequences: false)
+            .map(String.init)
+            .filter { line in
+                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                return !trimmed.hasPrefix("thinking about how to respond")
+            }
+
+        let cleaned = cleanedLines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+        return cleaned.isEmpty ? nil : cleaned
     }
 }
 

@@ -2,11 +2,13 @@ import Foundation
 
 final class AIChatSettingsStore {
     private static let defaultSponsoredEndpoint = URL(string: "https://habibi-float-api.habibi-float.workers.dev/v1/chat")
+    static let defaultOpenRouterModel = "openrouter/free"
 
     private enum Key {
         static let providerMode = "habibiFloat.chat.providerMode"
         static let deviceID = "habibiFloat.chat.deviceID"
         static let sponsoredEndpoint = "habibiFloat.chat.sponsoredEndpoint"
+        static let openRouterModel = "habibiFloat.chat.openRouterModel"
     }
 
     private let defaults: UserDefaults
@@ -53,6 +55,17 @@ final class AIChatSettingsStore {
             } else {
                 defaults.removeObject(forKey: Key.sponsoredEndpoint)
             }
+        }
+    }
+
+    var openRouterModel: String {
+        get {
+            let stored = defaults.string(forKey: Key.openRouterModel)?.trimmingCharacters(in: .whitespacesAndNewlines)
+            return stored?.isEmpty == false ? stored! : Self.defaultOpenRouterModel
+        }
+        set {
+            let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            defaults.set(trimmed.isEmpty ? Self.defaultOpenRouterModel : trimmed, forKey: Key.openRouterModel)
         }
     }
 }

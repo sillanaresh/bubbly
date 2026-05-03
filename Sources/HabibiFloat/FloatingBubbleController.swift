@@ -361,7 +361,7 @@ final class FloatingBubbleController {
             return
         }
 
-        let timer = Timer(timeInterval: 1.0 / 24.0, repeats: true) { [weak self] _ in
+        let timer = Timer(timeInterval: 1.0 / 18.0, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated {
                 self?.tickMovement()
             }

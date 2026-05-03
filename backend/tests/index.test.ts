@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { handleRequest, type Env } from "../src/index";
+import { handleRequest, testing, type Env } from "../src/index";
 
 class InMemoryKV {
   private readonly values = new Map<string, string>();
@@ -207,5 +207,11 @@ describe("Habibi Float backend", () => {
     expect(second.status).toBe(429);
     expect(secondJson.code).toBe("global_limit_reached");
     expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("cleans leaked reasoning text from free model responses", () => {
+    const cleaned = testing.cleanAssistantMessage(`thinking about how to respond...\n</think>\nHello, I am Bubbly.`);
+
+    expect(cleaned).toBe("Hello, I am Bubbly.");
   });
 });
