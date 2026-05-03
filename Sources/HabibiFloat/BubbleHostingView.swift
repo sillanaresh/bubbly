@@ -95,7 +95,7 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
     }
 
     private func isPointInsideChatBadge(_ point: NSPoint) -> Bool {
-        let center = NSPoint(x: bounds.midX + 45, y: bounds.midY + 47)
+        let center = NSPoint(x: bounds.midX + 45, y: bounds.midY - 47)
         let dx = point.x - center.x
         let dy = point.y - center.y
         let radius: CGFloat = 21
