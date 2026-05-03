@@ -1,51 +1,26 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { handleRequest, type Env } from "../src/index";
 
-class InMemoryD1 {
-  private readonly counts = new Map<string, number>();
+class InMemoryKV {
+  private readonly values = new Map<string, string>();
 
-  prepare(sql: string) {
-    return {
-      bind: (...args: unknown[]) => ({
-        first: async <T>() => {
-          if (!sql.includes("INSERT INTO daily_usage")) {
-            return null;
-          }
+  async get(key: string, type?: "json"): Promise<unknown> {
+    const value = this.values.get(key);
+    if (value === undefined) {
+      return null;
+    }
 
-          const scope = String(args[0]);
-          const day = String(args[1]);
-          const limit = Number(args[2]);
-          const key = `${scope}|${day}`;
-          const current = this.counts.get(key) ?? 0;
+    return type === "json" ? JSON.parse(value) : value;
+  }
 
-          if (current >= limit) {
-            return null;
-          }
-
-          const next = current + 1;
-          this.counts.set(key, next);
-          return { count: next } as T;
-        },
-        run: async () => {
-          if (!sql.includes("UPDATE daily_usage")) {
-            return { success: true };
-          }
-
-          const scope = String(args[0]);
-          const day = String(args[1]);
-          const key = `${scope}|${day}`;
-          const current = this.counts.get(key) ?? 0;
-          this.counts.set(key, Math.max(0, current - 1));
-          return { success: true };
-        }
-      })
-    };
+  async put(key: string, value: string): Promise<void> {
+    this.values.set(key, value);
   }
 }
 
 function env(overrides: Partial<Env> = {}): Env {
   return {
-    HABIBI_DB: new InMemoryD1() as unknown as D1Database,
+    HABIBI_USAGE: new InMemoryKV() as unknown as KVNamespace,
     OPENROUTER_API_KEY: "test-key",
     OPENROUTER_MODEL: "openrouter/free",
     DAILY_DEVICE_LIMIT: "30",
@@ -234,4 +209,3 @@ describe("Habibi Float backend", () => {
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 });
-

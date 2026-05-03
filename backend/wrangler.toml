@@ -11,7 +11,6 @@ MAX_OUTPUT_TOKENS = "350"
 APP_TITLE = "Habibi Float"
 APP_REFERER = "https://habibi-float.local"
 
-[[d1_databases]]
-binding = "HABIBI_DB"
-database_name = "habibi-float-api-db"
-database_id = "replace-after-cloudflare-d1-create"
+[[kv_namespaces]]
+binding = "HABIBI_USAGE"
+id = "7f7c44584e954dec9012c42c053a75cf"

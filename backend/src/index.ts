@@ -1,5 +1,5 @@
 export interface Env {
-  HABIBI_DB: D1Database;
+  HABIBI_USAGE: KVNamespace;
   OPENROUTER_API_KEY: string;
   OPENROUTER_MODEL?: string;
   DAILY_DEVICE_LIMIT?: string;
@@ -113,7 +113,7 @@ async function handleChat(request: Request, env: Env): Promise<Response> {
   let deviceReservation: QuotaReservation | undefined;
 
   try {
-    globalReservation = await reserveQuota(env.HABIBI_DB, "global", day, globalLimit);
+    globalReservation = await reserveQuota(env.HABIBI_USAGE, "global", day, globalLimit);
     if (!globalReservation) {
       return jsonResponse(request, env, 429, {
         error: "Sponsored chat is busy for today. Try again tomorrow or use your own OpenRouter key.",
@@ -121,7 +121,7 @@ async function handleChat(request: Request, env: Env): Promise<Response> {
       });
     }
 
-    deviceReservation = await reserveQuota(env.HABIBI_DB, `device:${parsed.value.deviceId}`, day, deviceLimit);
+    deviceReservation = await reserveQuota(env.HABIBI_USAGE, `device:${parsed.value.deviceId}`, day, deviceLimit);
     if (!deviceReservation) {
       await globalReservation.release();
       return jsonResponse(request, env, 429, {
@@ -284,35 +284,36 @@ async function requestOpenRouter(messages: ChatMessage[], env: Env): Promise<{ m
 }
 
 async function reserveQuota(
-  db: D1Database,
+  usage: KVNamespace,
   scope: string,
   day: string,
   limit: number
 ): Promise<QuotaReservation | undefined> {
-  const row = await db.prepare(`
-    INSERT INTO daily_usage (scope, day, count)
-    VALUES (?1, ?2, 1)
-    ON CONFLICT(scope, day) DO UPDATE SET count = count + 1
-      WHERE count < ?3
-    RETURNING count
-  `).bind(scope, day, limit).first<{ count: number }>();
+  const key = usageKey(scope, day);
+  const current = await usage.get(key, "json") as number | null;
+  const count = typeof current === "number" && Number.isFinite(current) ? current : 0;
 
-  if (!row) {
+  if (count >= limit) {
     return undefined;
   }
 
+  const next = count + 1;
+  await usage.put(key, JSON.stringify(next), { expirationTtl: secondsUntilTomorrowUtc() + 3600 });
+
   return {
-    remaining: Math.max(0, limit - row.count),
-    release: () => refundQuota(db, scope, day)
+    remaining: Math.max(0, limit - next),
+    release: () => refundQuota(usage, scope, day)
   };
 }
 
-async function refundQuota(db: D1Database, scope: string, day: string): Promise<void> {
-  await db.prepare(`
-    UPDATE daily_usage
-    SET count = MAX(count - 1, 0)
-    WHERE scope = ?1 AND day = ?2
-  `).bind(scope, day).run();
+async function refundQuota(usage: KVNamespace, scope: string, day: string): Promise<void> {
+  const key = usageKey(scope, day);
+  const current = await usage.get(key, "json") as number | null;
+  const count = typeof current === "number" && Number.isFinite(current) ? current : 0;
+
+  await usage.put(key, JSON.stringify(Math.max(0, count - 1)), {
+    expirationTtl: secondsUntilTomorrowUtc() + 3600
+  });
 }
 
 async function refundQuietly(reservation: QuotaReservation | undefined): Promise<void> {
@@ -338,6 +339,24 @@ function readPositiveInt(value: string | undefined, fallback: number): number {
 
 function utcDay(now = new Date()): string {
   return now.toISOString().slice(0, 10);
+}
+
+function usageKey(scope: string, day: string): string {
+  return `usage:${day}:${scope}`;
+}
+
+function secondsUntilTomorrowUtc(now = new Date()): number {
+  const tomorrow = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + 1,
+    0,
+    0,
+    0,
+    0
+  ));
+
+  return Math.max(60, Math.ceil((tomorrow.getTime() - now.getTime()) / 1000));
 }
 
 function jsonResponse(request: Request, env: Env, status: number, body: unknown): Response {

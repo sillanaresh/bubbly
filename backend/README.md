@@ -33,27 +33,21 @@ Do not commit `.dev.vars`.
 npx wrangler login
 ```
 
-2. Create the D1 database:
+2. Create the KV namespace for daily usage counters:
 
 ```sh
-npx wrangler d1 create habibi-float-api-db
+npx wrangler kv namespace create HABIBI_USAGE
 ```
 
-3. Copy the returned `database_id` into `wrangler.toml`.
+3. Copy the returned `id` into `wrangler.toml`.
 
-4. Create the table:
-
-```sh
-npm run db:migrate:remote
-```
-
-5. Add the OpenRouter key as a secret:
+4. Add the OpenRouter key as a secret:
 
 ```sh
 npx wrangler secret put OPENROUTER_API_KEY
 ```
 
-6. Deploy:
+5. Deploy:
 
 ```sh
 npm run deploy
@@ -109,3 +103,4 @@ Defaults are configured in `wrangler.toml`:
 
 The default model is `openrouter/free`, which routes to currently available free OpenRouter models. OpenRouter free model availability and limits can change, so we should revisit the model choice before a wider release.
 
+Daily counters use Cloudflare KV. This is good enough for early friend-sharing usage. For a large public release, replace KV counters with Durable Objects or another strongly consistent store so simultaneous requests cannot briefly exceed the exact daily limit.
