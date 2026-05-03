@@ -206,6 +206,20 @@ h1 {
   font-size: 0.95rem;
 }
 
+.product-hunt-badge {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 22px;
+  border-radius: 8px;
+}
+
+.product-hunt-badge img {
+  display: block;
+  width: 250px;
+  max-width: 100%;
+  height: auto;
+}
+
 .hero-product {
   display: flex;
   justify-content: center;
@@ -638,6 +652,10 @@ h2 {
 
   .supporting-note {
     max-width: 280px;
+  }
+
+  .product-hunt-badge {
+    margin-top: 18px;
   }
 
   .preview-section,
