@@ -82,7 +82,11 @@ Download:
 
 `dist/Bubbly.dmg`
 
-Because this early version is not notarized yet, macOS may warn that it cannot verify the app. If you see **"Bubbly" Not Opened**, click **Done**, then right-click the app and choose **Open**. Do not choose **Move to Bin**.
+Because this is an early friend build, Bubbly is not Apple-notarized yet. Apple notarization requires an Apple Developer account, which costs about $99/year, and Bubbly is not using that paid account yet.
+
+That means macOS may warn that it cannot verify the app. If you see **"Bubbly" Not Opened**, click **Done**. Then open **System Settings** → **Privacy & Security**, scroll to **Security**, and click **Open Anyway** for Bubbly. If asked again, click **Open**.
+
+Do not choose **Move to Bin**.
 
 ## Current Status
 
