@@ -106,22 +106,81 @@ enum BubbleFeatureMode: String, CaseIterable {
     var title: String {
         switch self {
         case .carefree: "Carefree"
-        case .chat: "Chat"
-        case .playground: "Playground"
-        case .everything: "Everything"
+        case .chat: "Chatty"
+        case .playground: "Playtime"
+        case .everything: "Bubbly Max"
         }
     }
 
-    var showsChatBadge: Bool {
+    var enabledActions: [BubbleAction] {
         switch self {
-        case .chat, .everything:
-            true
-        case .carefree, .playground:
-            false
+        case .chat:
+            return [.chat]
+        case .playground:
+            return BubbleAction.effectActions
+        case .everything:
+            return BubbleAction.allCases
+        case .carefree:
+            return []
         }
     }
 
     static func from(id: String) -> BubbleFeatureMode {
         BubbleFeatureMode(rawValue: id) ?? .chat
+    }
+}
+
+enum BubbleAction: String, CaseIterable {
+    case chat
+    case rain
+    case cloud
+    case butterflies
+    case cannon
+    case sparkles
+
+    static let effectActions: [BubbleAction] = [.rain, .cloud, .butterflies, .cannon, .sparkles]
+
+    var title: String {
+        switch self {
+        case .chat: "Chat"
+        case .rain: "Rain"
+        case .cloud: "Cloud"
+        case .butterflies: "Butterflies"
+        case .cannon: "Cannon"
+        case .sparkles: "Sparkles"
+        }
+    }
+
+    var systemImageName: String {
+        switch self {
+        case .chat: "bubble.left.fill"
+        case .rain: "cloud.rain.fill"
+        case .cloud: "cloud.fill"
+        case .butterflies: "leaf.fill"
+        case .cannon: "target"
+        case .sparkles: "sparkles"
+        }
+    }
+
+    var offset: CGSize {
+        switch self {
+        case .chat: CGSize(width: 45, height: -47)
+        case .rain: CGSize(width: -45, height: -47)
+        case .cloud: CGSize(width: -61, height: 0)
+        case .butterflies: CGSize(width: -42, height: 49)
+        case .cannon: CGSize(width: 42, height: 49)
+        case .sparkles: CGSize(width: 61, height: 0)
+        }
+    }
+
+    var tint: Color {
+        switch self {
+        case .chat: Color(red: 0.24, green: 0.50, blue: 0.78)
+        case .rain: Color(red: 0.26, green: 0.52, blue: 0.88)
+        case .cloud: Color(red: 0.47, green: 0.58, blue: 0.68)
+        case .butterflies: Color(red: 0.88, green: 0.42, blue: 0.72)
+        case .cannon: Color(red: 0.89, green: 0.45, blue: 0.28)
+        case .sparkles: Color(red: 0.72, green: 0.48, blue: 0.92)
+        }
     }
 }

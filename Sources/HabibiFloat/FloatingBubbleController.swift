@@ -11,6 +11,7 @@ final class FloatingBubbleController {
     private let visualState = BubbleVisualState()
     private let soundPlayer = BubbleSoundPlayer()
     private let chatPanelController: ChatPanelController
+    private let effectOverlayController = EffectOverlayController()
     private let windowSize = NSSize(width: 144, height: 144)
     private let movementSpeed: CGFloat = 48
 
@@ -117,7 +118,7 @@ final class FloatingBubbleController {
     func setFeatureMode(_ mode: BubbleFeatureMode) {
         preferences.featureModeID = mode.rawValue
         applyAppearanceState()
-        if !mode.showsChatBadge {
+        if !mode.enabledActions.contains(.chat) {
             closeChat()
         }
         persistCurrentState()
@@ -253,6 +254,9 @@ final class FloatingBubbleController {
         hostingView.onChatBadgeClick = { [weak self] in
             self?.toggleChat()
         }
+        hostingView.onActionBadgeClick = { [weak self] action in
+            self?.triggerEffect(action)
+        }
         hostingView.onDrag = { [weak self] origin in
             self?.stopMovement()
             self?.setWindowOrigin(origin, persist: false)
@@ -307,6 +311,16 @@ final class FloatingBubbleController {
         } else if visualState.isChatOpen || isPinnedForChat {
             handleChatClosed()
         }
+    }
+
+    private func triggerEffect(_ action: BubbleAction) {
+        guard action != .chat, let window else {
+            return
+        }
+
+        soundPlayer.play(presetID: preferences.clickSoundID, volumeID: preferences.soundVolumeID)
+        visualState.react()
+        effectOverlayController.show(action: action, from: window.frame, visibleFrame: currentVisibleFrame())
     }
 
     private func handleChatClosed() {

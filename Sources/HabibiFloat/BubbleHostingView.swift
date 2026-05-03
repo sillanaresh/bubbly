@@ -8,6 +8,7 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
     var onDragEnded: (() -> Void)?
     var onRightClick: ((NSEvent, NSView) -> Void)?
     var onChatBadgeClick: (() -> Void)?
+    var onActionBadgeClick: ((BubbleAction) -> Void)?
 
     private var dragStartMouseLocation: NSPoint?
     private var dragStartWindowOrigin: NSPoint?
@@ -28,8 +29,12 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
 
     override func mouseDown(with event: NSEvent) {
         let point = convert(event.locationInWindow, from: nil)
-        if rootView.visualState.featureMode.showsChatBadge, isPointInsideChatBadge(point) {
-            onChatBadgeClick?()
+        if let action = action(at: point) {
+            if action == .chat {
+                onChatBadgeClick?()
+            } else {
+                onActionBadgeClick?(action)
+            }
             return
         }
 
@@ -72,8 +77,7 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
     }
 
     override func hitTest(_ point: NSPoint) -> NSView? {
-        let isInsideEnabledChatBadge = rootView.visualState.featureMode.showsChatBadge && isPointInsideChatBadge(point)
-        guard isPointInsideBubble(point) || isInsideEnabledChatBadge else {
+        guard isPointInsideBubble(point) || action(at: point) != nil else {
             return nil
         }
 
@@ -95,11 +99,17 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
         return dx * dx + dy * dy <= radius * radius
     }
 
-    private func isPointInsideChatBadge(_ point: NSPoint) -> Bool {
-        let center = NSPoint(x: bounds.midX + 45, y: bounds.midY - 47)
+    private func action(at point: NSPoint) -> BubbleAction? {
+        rootView.visualState.featureMode.enabledActions.first { action in
+            isPoint(point, inside: action)
+        }
+    }
+
+    private func isPoint(_ point: NSPoint, inside action: BubbleAction) -> Bool {
+        let center = NSPoint(x: bounds.midX + action.offset.width, y: bounds.midY + action.offset.height)
         let dx = point.x - center.x
         let dy = point.y - center.y
-        let radius: CGFloat = 21
+        let radius: CGFloat = 19
         return dx * dx + dy * dy <= radius * radius
     }
 

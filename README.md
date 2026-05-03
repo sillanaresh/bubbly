@@ -22,7 +22,7 @@ Build a local `.app` bundle:
 ./scripts/build-app.sh
 ```
 
-To configure sponsored chat in the app bundle, pass the deployed backend URL at build time:
+To configure Bubbly Free chat in the app bundle, pass the deployed backend URL at build time:
 
 ```sh
 HABIBI_CHAT_BACKEND_URL="https://your-worker.example/v1/chat" ./scripts/build-app.sh
@@ -65,11 +65,11 @@ The chat badge opens a compact floating panel next to the pet. Closing the panel
 
 Chat supports three modes:
 
-- `Sponsored`: calls the configured Habibi backend at `POST /v1/chat`.
+- `Bubbly Free`: calls the configured Habibi backend at `POST /v1/chat`.
 - `Your OpenRouter Key`: stores a user-provided OpenRouter key in macOS Keychain and calls OpenRouter directly.
 - `Offline`: disables network chat.
 
-The sponsored backend lives in `backend/`. It proxies OpenRouter, enforces daily per-device limits, has a global guard, and keeps the OpenRouter key in Cloudflare environment secrets.
+The Bubbly Free backend lives in `backend/`. It proxies OpenRouter, enforces daily per-device limits, has a global guard, and keeps the OpenRouter key in Cloudflare environment secrets.
 
 ## Friend Notes
 

@@ -92,7 +92,7 @@ export async function handleRequest(request: Request, env: Env): Promise<Respons
 async function handleChat(request: Request, env: Env): Promise<Response> {
   if (env.KILL_SWITCH === "1" || env.KILL_SWITCH?.toLowerCase() === "true") {
     return jsonResponse(request, env, 503, {
-      error: "Sponsored chat is temporarily unavailable.",
+      error: "Bubbly Free chat is temporarily unavailable.",
       code: "service_disabled"
     });
   }
@@ -123,7 +123,7 @@ async function handleChat(request: Request, env: Env): Promise<Response> {
     globalReservation = await reserveQuota(env.HABIBI_USAGE, "global", day, globalLimit);
     if (!globalReservation) {
       return jsonResponse(request, env, 429, {
-        error: "Sponsored chat is busy for today. Try again tomorrow or use your own OpenRouter key.",
+        error: "Bubbly Free chat is busy for today. Try again tomorrow or use your own OpenRouter key.",
         code: "global_limit_reached"
       });
     }

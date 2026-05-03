@@ -38,7 +38,7 @@ enum AIChatProviderMode: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .sponsored: "Sponsored"
+        case .sponsored: "Bubbly Free"
         case .openRouterKey: "Advanced"
         case .offline: "Offline"
         }
@@ -60,7 +60,7 @@ enum AIChatError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .missingSponsoredEndpoint:
-            "Sponsored chat is not configured yet."
+            "Bubbly Free chat is not configured yet."
         case .missingOpenRouterKey:
             "Add your OpenRouter key to use direct chat."
         case .offline:

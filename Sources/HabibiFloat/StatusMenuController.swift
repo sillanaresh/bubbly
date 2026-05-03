@@ -270,15 +270,12 @@ final class StatusMenuController: NSObject {
         bounds.fill()
 
         let bodyRect = bounds.insetBy(dx: 2, dy: 2)
-        NSColor(calibratedRed: 0.34, green: 0.62, blue: 0.92, alpha: 1).setFill()
-        NSBezierPath(ovalIn: bodyRect).fill()
-
-        NSColor.white.withAlphaComponent(0.78).setStroke()
+        NSColor.black.setStroke()
         let outline = NSBezierPath(ovalIn: bodyRect)
-        outline.lineWidth = 1.2
+        outline.lineWidth = 1.6
         outline.stroke()
 
-        NSColor(calibratedRed: 0.05, green: 0.12, blue: 0.20, alpha: 1).setFill()
+        NSColor.black.setFill()
         NSBezierPath(ovalIn: NSRect(x: 6, y: 9, width: 2.4, height: 2.8)).fill()
         NSBezierPath(ovalIn: NSRect(x: 10.2, y: 9, width: 2.4, height: 2.8)).fill()
 
@@ -289,13 +286,13 @@ final class StatusMenuController: NSObject {
             controlPoint1: NSPoint(x: 8.2, y: 5.9),
             controlPoint2: NSPoint(x: 10.2, y: 5.9)
         )
-        NSColor(calibratedRed: 0.05, green: 0.12, blue: 0.20, alpha: 1).setStroke()
+        NSColor.black.setStroke()
         smile.lineWidth = 1.2
         smile.lineCapStyle = .round
         smile.stroke()
 
         image.unlockFocus()
-        image.isTemplate = false
+        image.isTemplate = true
         image.accessibilityDescription = "Habibi Float"
         return image
     }

@@ -57,10 +57,10 @@ struct BubbleView: View {
                         .offset(x: 44, y: -46)
                 }
 
-                if visualState.featureMode.showsChatBadge {
-                    ChatBadge(isOpen: visualState.isChatOpen)
-                        .frame(width: 38, height: 38)
-                        .offset(x: 45, y: -47)
+                ForEach(visualState.featureMode.enabledActions, id: \.self) { action in
+                    ActionBadge(action: action, isOpen: action == .chat && visualState.isChatOpen)
+                        .frame(width: 34, height: 34)
+                        .offset(action.offset)
                 }
             }
             .saturation(pausedTint)
@@ -85,7 +85,8 @@ struct BubbleView: View {
 
 }
 
-private struct ChatBadge: View {
+private struct ActionBadge: View {
+    let action: BubbleAction
     let isOpen: Bool
 
     var body: some View {
@@ -98,11 +99,11 @@ private struct ChatBadge: View {
                 .fill(isOpen ? Color(red: 0.30, green: 0.66, blue: 0.92) : Color.white.opacity(0.94))
                 .padding(4)
 
-            Image(systemName: isOpen ? "bubble.left.and.bubble.right.fill" : "bubble.left.fill")
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(isOpen ? Color.white : Color(red: 0.24, green: 0.50, blue: 0.78))
+            Image(systemName: isOpen && action == .chat ? "bubble.left.and.bubble.right.fill" : action.systemImageName)
+                .font(.system(size: action == .sparkles ? 14 : 15, weight: .semibold))
+                .foregroundStyle(isOpen ? Color.white : action.tint)
         }
-        .accessibilityLabel("Open chat")
+        .accessibilityLabel(action.title)
     }
 }
 

@@ -1,6 +1,6 @@
 # Habibi Float Backend
 
-Small Cloudflare Worker backend for the sponsored AI chat mode.
+Small Cloudflare Worker backend for the Bubbly Free AI chat mode.
 
 The macOS app calls this backend. The backend owns the OpenRouter API key, enforces daily limits, and forwards approved chat requests to OpenRouter.
 
@@ -96,8 +96,8 @@ Error:
 
 Defaults are configured in `wrangler.toml`:
 
-- `30` sponsored messages per device per day
-- `1000` sponsored messages globally per day
+- `30` Bubbly Free messages per device per day
+- `1000` Bubbly Free messages globally per day
 - `8000` input characters per request
 - `350` max output tokens
 
