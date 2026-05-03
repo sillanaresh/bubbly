@@ -7,6 +7,7 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
     var onDrag: ((NSPoint) -> Void)?
     var onDragEnded: (() -> Void)?
     var onRightClick: ((NSEvent, NSView) -> Void)?
+    var onChatBadgeClick: (() -> Void)?
 
     private var dragStartMouseLocation: NSPoint?
     private var dragStartWindowOrigin: NSPoint?
@@ -26,6 +27,12 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
     }
 
     override func mouseDown(with event: NSEvent) {
+        let point = convert(event.locationInWindow, from: nil)
+        if isPointInsideChatBadge(point) {
+            onChatBadgeClick?()
+            return
+        }
+
         dragStartMouseLocation = NSEvent.mouseLocation
         dragStartWindowOrigin = window?.frame.origin
 
@@ -65,7 +72,7 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
     }
 
     override func hitTest(_ point: NSPoint) -> NSView? {
-        guard isPointInsideBubble(point) else {
+        guard isPointInsideBubble(point) || isPointInsideChatBadge(point) else {
             return nil
         }
 
@@ -87,12 +94,20 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
         return dx * dx + dy * dy <= radius * radius
     }
 
+    private func isPointInsideChatBadge(_ point: NSPoint) -> Bool {
+        let center = NSPoint(x: bounds.midX + 45, y: bounds.midY + 47)
+        let dx = point.x - center.x
+        let dy = point.y - center.y
+        let radius: CGFloat = 21
+        return dx * dx + dy * dy <= radius * radius
+    }
+
     private func applyCircularMask() {
         guard let layer else {
             return
         }
 
         layer.cornerRadius = min(bounds.width, bounds.height) / 2
-        layer.masksToBounds = true
+        layer.masksToBounds = false
     }
 }

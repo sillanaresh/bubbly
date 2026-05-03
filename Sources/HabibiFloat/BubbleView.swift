@@ -56,6 +56,10 @@ struct BubbleView: View {
                         .frame(width: 38, height: 38)
                         .offset(x: 44, y: -46)
                 }
+
+                ChatBadge(isOpen: visualState.isChatOpen)
+                    .frame(width: 38, height: 38)
+                    .offset(x: 45, y: -47)
             }
             .saturation(pausedTint)
             .frame(width: 132, height: 132)
@@ -77,6 +81,27 @@ struct BubbleView: View {
         }
     }
 
+}
+
+private struct ChatBadge: View {
+    let isOpen: Bool
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(Color(nsColor: .windowBackgroundColor))
+                .shadow(color: Color.black.opacity(0.16), radius: 5, y: 2)
+
+            Circle()
+                .fill(isOpen ? Color(red: 0.30, green: 0.66, blue: 0.92) : Color.white.opacity(0.94))
+                .padding(4)
+
+            Image(systemName: isOpen ? "bubble.left.and.bubble.right.fill" : "bubble.left.fill")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(isOpen ? Color.white : Color(red: 0.24, green: 0.50, blue: 0.78))
+        }
+        .accessibilityLabel("Open chat")
+    }
 }
 
 private struct Eye: View {

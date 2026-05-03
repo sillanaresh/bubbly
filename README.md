@@ -22,6 +22,12 @@ Build a local `.app` bundle:
 ./scripts/build-app.sh
 ```
 
+To configure sponsored chat in the app bundle, pass the deployed backend URL at build time:
+
+```sh
+HABIBI_CHAT_BACKEND_URL="https://your-worker.example/v1/chat" ./scripts/build-app.sh
+```
+
 Launch it:
 
 ```sh
@@ -40,6 +46,7 @@ Build a shareable unsigned DMG:
 - Click the bubble for a happy bounce.
 - Double-click the bubble to pause or resume wandering.
 - Right-click the bubble for controls.
+- Click the small chat badge to pin the bubble and open chat.
 - Use the menu bar icon to show, hide, pause, reset, change sounds, open About, or quit.
 - Use `Theme` to change the pet colors.
 - Use `Mood` to switch between Happy, Sleepy, Shy, and Focus.
@@ -52,14 +59,26 @@ Build a shareable unsigned DMG:
 
 DMG packaging creates `dist/Habibi Float.dmg`. It contains the app plus an `/Applications` shortcut.
 
+## AI Chat
+
+The chat badge opens a compact floating panel next to the pet. Closing the panel unpins the pet and restores the previous pause or running state.
+
+Chat supports three modes:
+
+- `Sponsored`: calls the configured Habibi backend at `POST /v1/chat`.
+- `Your OpenRouter Key`: stores a user-provided OpenRouter key in macOS Keychain and calls OpenRouter directly.
+- `Offline`: disables network chat.
+
+The sponsored backend lives in `backend/`. It proxies OpenRouter, enforces daily per-device limits, has a global guard, and keeps the OpenRouter key in Cloudflare environment secrets.
+
 ## Friend Notes
 
-Habibi Float is a local-only Mac app:
+Habibi Float keeps pet behavior local. Chat uses the network only when a message is sent:
 
-- It does not use the internet.
 - It does not track anything.
 - It does not collect analytics.
-- It saves only local preferences like position, pause state, and selected sound.
+- It saves local preferences like position, pause state, selected sound, anonymous chat device ID, and selected chat mode.
+- User OpenRouter keys are stored in macOS Keychain, not UserDefaults.
 
 To close it, use the menu bar icon and choose `Quit Habibi Float`.
 

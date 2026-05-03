@@ -10,6 +10,7 @@ final class FloatingBubbleController {
     private let preferencesStore: UserDefaultsPreferencesStore
     private let visualState = BubbleVisualState()
     private let soundPlayer = BubbleSoundPlayer()
+    private let chatPanelController: ChatPanelController
     private let windowSize = NSSize(width: 144, height: 144)
     private let movementSpeed: CGFloat = 48
 
@@ -19,10 +20,21 @@ final class FloatingBubbleController {
     private var wanderMotion: WanderMotion?
     private var nextWanderAt = Date.distantPast
     private var lastPositionSave = Date.distantPast
+    private var isPinnedForChat = false
+    private var pauseStateBeforeChat: Bool?
 
     init(preferences: UserDefaultsPreferencesStore) {
         self.preferencesStore = preferences
         self.preferences = preferences.load()
+        let chatSettings = AIChatSettingsStore()
+        let keyStore = KeychainOpenRouterKeyStore()
+        self.chatPanelController = ChatPanelController(
+            viewModel: AIChatViewModel(
+                settings: chatSettings,
+                keyStore: keyStore,
+                service: AIChatService(settings: chatSettings, keyStore: keyStore)
+            )
+        )
         self.visualState.isPaused = self.preferences.isPaused
         applyAppearanceState()
         observeScreenChanges()
@@ -131,6 +143,7 @@ final class FloatingBubbleController {
 
     func hideBubble() {
         preferences.isVisible = false
+        closeChat()
         window?.orderOut(nil)
         stopMovement()
         persistCurrentState()
@@ -222,6 +235,9 @@ final class FloatingBubbleController {
         hostingView.onDoubleClick = { [weak self] in
             self?.togglePause()
         }
+        hostingView.onChatBadgeClick = { [weak self] in
+            self?.toggleChat()
+        }
         hostingView.onDrag = { [weak self] origin in
             self?.stopMovement()
             self?.setWindowOrigin(origin, persist: false)
@@ -229,7 +245,7 @@ final class FloatingBubbleController {
         hostingView.onDragEnded = { [weak self] in
             self?.ensureWindowIsVisible()
             self?.persistCurrentState()
-            if self?.preferences.isVisible == true, self?.preferences.isPaused == false {
+            if self?.preferences.isVisible == true, self?.preferences.isPaused == false, self?.isPinnedForChat == false {
                 self?.startMovement()
             }
         }
@@ -242,6 +258,50 @@ final class FloatingBubbleController {
 
         panel.contentView = hostingView
         window = panel
+    }
+
+    private func toggleChat() {
+        if chatPanelController.isOpen {
+            closeChat()
+        } else {
+            openChat()
+        }
+    }
+
+    private func openChat() {
+        createWindowIfNeeded()
+        guard let window else {
+            return
+        }
+
+        if pauseStateBeforeChat == nil {
+            pauseStateBeforeChat = preferences.isPaused
+        }
+        isPinnedForChat = true
+        visualState.isChatOpen = true
+        stopMovement()
+
+        chatPanelController.show(attachedTo: window.frame, visibleFrame: currentVisibleFrame()) { [weak self] in
+            self?.handleChatClosed()
+        }
+    }
+
+    private func closeChat() {
+        if chatPanelController.isOpen {
+            chatPanelController.close()
+        } else if visualState.isChatOpen || isPinnedForChat {
+            handleChatClosed()
+        }
+    }
+
+    private func handleChatClosed() {
+        isPinnedForChat = false
+        visualState.isChatOpen = false
+
+        if let pauseStateBeforeChat {
+            self.pauseStateBeforeChat = nil
+            setPaused(pauseStateBeforeChat)
+        }
     }
 
     private func applySavedOrDefaultPosition() {
@@ -264,7 +324,7 @@ final class FloatingBubbleController {
     }
 
     private func startMovement() {
-        guard preferences.isVisible, !preferences.isPaused else {
+        guard preferences.isVisible, !preferences.isPaused, !isPinnedForChat else {
             return
         }
 
@@ -288,7 +348,7 @@ final class FloatingBubbleController {
     }
 
     private func tickMovement() {
-        guard preferences.isVisible, !preferences.isPaused, let window else {
+        guard preferences.isVisible, !preferences.isPaused, !isPinnedForChat, let window else {
             return
         }
 
