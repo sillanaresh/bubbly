@@ -12,7 +12,7 @@ final class StatusMenuController: NSObject {
         super.init()
 
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "sparkles", accessibilityDescription: "Habibi Float")
+            button.image = Self.makeStatusBubbleIcon()
             button.imagePosition = .imageOnly
         }
 
@@ -42,6 +42,7 @@ final class StatusMenuController: NSObject {
         menu.addItem(themeMenu())
         menu.addItem(moodMenu())
         menu.addItem(characterMenu())
+        menu.addItem(featureModeMenu())
         menu.addItem(smartPositioningItem())
         menu.addItem(soundMenu())
         menu.addItem(volumeMenu())
@@ -114,6 +115,15 @@ final class StatusMenuController: NSObject {
         }
 
         controller?.setCharacter(character)
+        refreshMenu()
+    }
+
+    @objc private func chooseFeatureMode(_ sender: NSMenuItem) {
+        guard let mode = sender.representedObject as? BubbleFeatureMode else {
+            return
+        }
+
+        controller?.setFeatureMode(mode)
         refreshMenu()
     }
 
@@ -209,6 +219,23 @@ final class StatusMenuController: NSObject {
         return parent
     }
 
+    private func featureModeMenu() -> NSMenuItem {
+        let parent = NSMenuItem(title: "Feature Mode", action: nil, keyEquivalent: "")
+        let submenu = NSMenu(title: "Feature Mode")
+        let selectedID = controller?.featureModeID ?? BubbleFeatureMode.chat.rawValue
+
+        for mode in BubbleFeatureMode.allCases {
+            let item = NSMenuItem(title: mode.title, action: #selector(chooseFeatureMode(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = mode
+            item.state = mode.rawValue == selectedID ? .on : .off
+            submenu.addItem(item)
+        }
+
+        parent.submenu = submenu
+        return parent
+    }
+
     private func smartPositioningItem() -> NSMenuItem {
         let item = NSMenuItem(title: "Smart Positioning", action: #selector(toggleSmartPositioning), keyEquivalent: "")
         item.target = self
@@ -231,5 +258,45 @@ final class StatusMenuController: NSObject {
 
         parent.submenu = submenu
         return parent
+    }
+
+    private static func makeStatusBubbleIcon() -> NSImage {
+        let size = NSSize(width: 18, height: 18)
+        let image = NSImage(size: size)
+        image.lockFocus()
+
+        let bounds = NSRect(origin: .zero, size: size)
+        NSColor.clear.setFill()
+        bounds.fill()
+
+        let bodyRect = bounds.insetBy(dx: 2, dy: 2)
+        NSColor(calibratedRed: 0.34, green: 0.62, blue: 0.92, alpha: 1).setFill()
+        NSBezierPath(ovalIn: bodyRect).fill()
+
+        NSColor.white.withAlphaComponent(0.78).setStroke()
+        let outline = NSBezierPath(ovalIn: bodyRect)
+        outline.lineWidth = 1.2
+        outline.stroke()
+
+        NSColor(calibratedRed: 0.05, green: 0.12, blue: 0.20, alpha: 1).setFill()
+        NSBezierPath(ovalIn: NSRect(x: 6, y: 9, width: 2.4, height: 2.8)).fill()
+        NSBezierPath(ovalIn: NSRect(x: 10.2, y: 9, width: 2.4, height: 2.8)).fill()
+
+        let smile = NSBezierPath()
+        smile.move(to: NSPoint(x: 7.2, y: 6.8))
+        smile.curve(
+            to: NSPoint(x: 11.2, y: 6.8),
+            controlPoint1: NSPoint(x: 8.2, y: 5.9),
+            controlPoint2: NSPoint(x: 10.2, y: 5.9)
+        )
+        NSColor(calibratedRed: 0.05, green: 0.12, blue: 0.20, alpha: 1).setStroke()
+        smile.lineWidth = 1.2
+        smile.lineCapStyle = .round
+        smile.stroke()
+
+        image.unlockFocus()
+        image.isTemplate = false
+        image.accessibilityDescription = "Habibi Float"
+        return image
     }
 }

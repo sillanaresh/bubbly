@@ -12,6 +12,7 @@ final class UserDefaultsPreferencesStore {
         static let themeID = "habibiFloat.themeID"
         static let moodID = "habibiFloat.moodID"
         static let characterID = "habibiFloat.characterID"
+        static let featureModeID = "habibiFloat.featureModeID"
         static let smartPositioningEnabled = "habibiFloat.smartPositioningEnabled"
     }
 
@@ -29,6 +30,7 @@ final class UserDefaultsPreferencesStore {
         let themeID = defaults.string(forKey: Key.themeID) ?? BubblePreferences.defaultThemeID
         let moodID = defaults.string(forKey: Key.moodID) ?? BubblePreferences.defaultMoodID
         let characterID = defaults.string(forKey: Key.characterID) ?? BubblePreferences.defaultCharacterID
+        let featureModeID = defaults.string(forKey: Key.featureModeID) ?? BubblePreferences.defaultFeatureModeID
         let smartPositioningEnabled = defaults.object(forKey: Key.smartPositioningEnabled) as? Bool ?? true
 
         let point: Point2D?
@@ -47,6 +49,7 @@ final class UserDefaultsPreferencesStore {
             themeID: themeID,
             moodID: moodID,
             characterID: characterID,
+            featureModeID: featureModeID,
             smartPositioningEnabled: smartPositioningEnabled
         )
     }
@@ -59,6 +62,7 @@ final class UserDefaultsPreferencesStore {
         defaults.set(preferences.themeID, forKey: Key.themeID)
         defaults.set(preferences.moodID, forKey: Key.moodID)
         defaults.set(preferences.characterID, forKey: Key.characterID)
+        defaults.set(preferences.featureModeID, forKey: Key.featureModeID)
         defaults.set(preferences.smartPositioningEnabled, forKey: Key.smartPositioningEnabled)
 
         if let lastPosition = preferences.lastPosition {

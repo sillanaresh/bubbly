@@ -6,6 +6,7 @@ public struct BubblePreferences: Codable, Equatable, Sendable {
     public static let defaultThemeID = "ocean"
     public static let defaultMoodID = "happy"
     public static let defaultCharacterID = "bubble"
+    public static let defaultFeatureModeID = "chat"
 
     public var isVisible: Bool
     public var isPaused: Bool
@@ -15,6 +16,7 @@ public struct BubblePreferences: Codable, Equatable, Sendable {
     public var themeID: String
     public var moodID: String
     public var characterID: String
+    public var featureModeID: String
     public var smartPositioningEnabled: Bool
 
     public init(
@@ -26,6 +28,7 @@ public struct BubblePreferences: Codable, Equatable, Sendable {
         themeID: String = Self.defaultThemeID,
         moodID: String = Self.defaultMoodID,
         characterID: String = Self.defaultCharacterID,
+        featureModeID: String = Self.defaultFeatureModeID,
         smartPositioningEnabled: Bool = true
     ) {
         self.isVisible = isVisible
@@ -36,6 +39,7 @@ public struct BubblePreferences: Codable, Equatable, Sendable {
         self.themeID = themeID
         self.moodID = moodID
         self.characterID = characterID
+        self.featureModeID = featureModeID
         self.smartPositioningEnabled = smartPositioningEnabled
     }
 }

@@ -96,3 +96,32 @@ enum BubbleCharacter: String, CaseIterable {
         BubbleCharacter(rawValue: id) ?? .bubble
     }
 }
+
+enum BubbleFeatureMode: String, CaseIterable {
+    case carefree
+    case chat
+    case playground
+    case everything
+
+    var title: String {
+        switch self {
+        case .carefree: "Carefree"
+        case .chat: "Chat"
+        case .playground: "Playground"
+        case .everything: "Everything"
+        }
+    }
+
+    var showsChatBadge: Bool {
+        switch self {
+        case .chat, .everything:
+            true
+        case .carefree, .playground:
+            false
+        }
+    }
+
+    static func from(id: String) -> BubbleFeatureMode {
+        BubbleFeatureMode(rawValue: id) ?? .chat
+    }
+}

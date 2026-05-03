@@ -5,6 +5,9 @@ final class AIChatService {
     private let settings: AIChatSettingsStore
     private let keyStore: KeychainOpenRouterKeyStore
     private let session: URLSession
+    private let systemPrompt = """
+    You are Bubbly, the cute floating bubble companion inside Habibi Float, a macOS desktop pet app. Be warm, concise, and playful without being childish. If asked who you are, say you are Bubbly from Habibi Float. Do not claim to be the underlying model or provider. Avoid abusive, hateful, sexual, or dangerous content; if a request is unsafe, gently refuse and offer a harmless alternative.
+    """
 
     init(
         settings: AIChatSettingsStore,
@@ -65,7 +68,7 @@ final class AIChatService {
     private func sendOpenRouter(messages: [AIChatWireMessage], apiKey: String) async throws -> AIChatResult {
         let payload = OpenRouterRequest(
             model: "openrouter/free",
-            messages: messages,
+            messages: [AIChatWireMessage(role: .system, content: systemPrompt)] + messages.filter { $0.role != .system },
             maxTokens: 700
         )
         let response: OpenRouterResponse = try await postJSON(

@@ -8,6 +8,7 @@ final class BubbleVisualState: ObservableObject {
     @Published var theme: BubbleTheme = .ocean
     @Published var mood: BubbleMood = .happy
     @Published var character: BubbleCharacter = .bubble
+    @Published var featureMode: BubbleFeatureMode = .chat
 
     func react() {
         reactionPulse += 1

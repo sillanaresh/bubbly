@@ -36,7 +36,7 @@ struct ChatView: View {
                     get: { viewModel.selectedMode },
                     set: { viewModel.selectMode($0) }
                 )) {
-                    ForEach(AIChatProviderMode.allCases, id: \.self) { mode in
+                    ForEach(AIChatProviderMode.userSelectable, id: \.self) { mode in
                         Text(mode.title).tag(mode)
                     }
                 }
@@ -51,7 +51,9 @@ struct ChatView: View {
                 .help("Close chat")
             }
 
-            settingsRow
+            if viewModel.selectedMode == .openRouterKey {
+                settingsRow
+            }
         }
         .padding(.horizontal, 14)
         .padding(.top, 14)
@@ -145,13 +147,7 @@ struct ChatView: View {
     private var settingsRow: some View {
         switch viewModel.selectedMode {
         case .sponsored:
-            HStack(spacing: 8) {
-                TextField("Backend URL", text: $viewModel.endpointDraft)
-                    .textFieldStyle(.roundedBorder)
-                Button("Save") {
-                    viewModel.saveEndpoint()
-                }
-            }
+            EmptyView()
         case .openRouterKey:
             HStack(spacing: 8) {
                 SecureField(viewModel.hasOpenRouterKey ? "Saved key" : "OpenRouter key", text: $viewModel.keyDraft)
@@ -198,9 +194,23 @@ struct ChatView: View {
                         endRadius: 30
                     )
                 )
-            Image(systemName: "sparkles")
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(.white)
+            HStack(spacing: 7) {
+                Circle()
+                    .fill(Color(red: 0.06, green: 0.13, blue: 0.22))
+                    .frame(width: 5, height: 6)
+                Circle()
+                    .fill(Color(red: 0.06, green: 0.13, blue: 0.22))
+                    .frame(width: 5, height: 6)
+            }
+            .offset(y: -2)
+
+            ChatSmile()
+                .stroke(
+                    Color(red: 0.06, green: 0.13, blue: 0.22),
+                    style: StrokeStyle(lineWidth: 1.8, lineCap: .round)
+                )
+                .frame(width: 12, height: 7)
+                .offset(y: 7)
         }
         .frame(width: 34, height: 34)
     }
@@ -218,10 +228,10 @@ struct ChatView: View {
                 .textSelection(.enabled)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 9)
-                .foregroundStyle(isUser ? Color.white : Color.primary)
+                .foregroundStyle(isUser ? Color.white : Color(red: 0.09, green: 0.20, blue: 0.31))
                 .background(
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(isUser ? Color.accentColor : Color(nsColor: .controlBackgroundColor))
+                        .fill(isUser ? Color.accentColor : Color(red: 0.90, green: 0.96, blue: 1.0))
                 )
 
             if !isUser {
@@ -229,5 +239,17 @@ struct ChatView: View {
             }
         }
         .padding(.horizontal, 14)
+    }
+}
+
+private struct ChatSmile: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.minX, y: rect.midY))
+        path.addQuadCurve(
+            to: CGPoint(x: rect.maxX, y: rect.midY),
+            control: CGPoint(x: rect.midX, y: rect.maxY)
+        )
+        return path
     }
 }

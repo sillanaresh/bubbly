@@ -34,10 +34,12 @@ enum AIChatProviderMode: String, CaseIterable {
     case openRouterKey
     case offline
 
+    static let userSelectable: [AIChatProviderMode] = [.sponsored, .openRouterKey]
+
     var title: String {
         switch self {
         case .sponsored: "Sponsored"
-        case .openRouterKey: "Your OpenRouter Key"
+        case .openRouterKey: "Advanced"
         case .offline: "Offline"
         }
     }

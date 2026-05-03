@@ -34,6 +34,10 @@ final class AIChatViewModel: ObservableObject {
     }
 
     func selectMode(_ mode: AIChatProviderMode) {
+        guard AIChatProviderMode.userSelectable.contains(mode) else {
+            return
+        }
+
         selectedMode = mode
         settings.providerMode = mode
         refreshStatus()

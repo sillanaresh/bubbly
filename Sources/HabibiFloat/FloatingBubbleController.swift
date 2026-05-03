@@ -68,6 +68,10 @@ final class FloatingBubbleController {
         preferences.characterID
     }
 
+    var featureModeID: String {
+        preferences.featureModeID
+    }
+
     var smartPositioningEnabled: Bool {
         preferences.smartPositioningEnabled
     }
@@ -106,6 +110,16 @@ final class FloatingBubbleController {
     func setCharacter(_ character: BubbleCharacter) {
         preferences.characterID = character.rawValue
         applyAppearanceState()
+        persistCurrentState()
+        onStateChanged?()
+    }
+
+    func setFeatureMode(_ mode: BubbleFeatureMode) {
+        preferences.featureModeID = mode.rawValue
+        applyAppearanceState()
+        if !mode.showsChatBadge {
+            closeChat()
+        }
         persistCurrentState()
         onStateChanged?()
     }
@@ -203,6 +217,7 @@ final class FloatingBubbleController {
         visualState.theme = BubbleTheme.from(id: preferences.themeID)
         visualState.mood = BubbleMood.from(id: preferences.moodID)
         visualState.character = BubbleCharacter.from(id: preferences.characterID)
+        visualState.featureMode = BubbleFeatureMode.from(id: preferences.featureModeID)
     }
 
     private func createWindowIfNeeded() {

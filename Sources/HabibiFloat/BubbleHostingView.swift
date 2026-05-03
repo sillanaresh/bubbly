@@ -28,7 +28,7 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
 
     override func mouseDown(with event: NSEvent) {
         let point = convert(event.locationInWindow, from: nil)
-        if isPointInsideChatBadge(point) {
+        if rootView.visualState.featureMode.showsChatBadge, isPointInsideChatBadge(point) {
             onChatBadgeClick?()
             return
         }
@@ -72,7 +72,8 @@ final class BubbleHostingView: NSHostingView<BubbleView> {
     }
 
     override func hitTest(_ point: NSPoint) -> NSView? {
-        guard isPointInsideBubble(point) || isPointInsideChatBadge(point) else {
+        let isInsideEnabledChatBadge = rootView.visualState.featureMode.showsChatBadge && isPointInsideChatBadge(point)
+        guard isPointInsideBubble(point) || isInsideEnabledChatBadge else {
             return nil
         }
 

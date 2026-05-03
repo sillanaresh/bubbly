@@ -57,9 +57,11 @@ struct BubbleView: View {
                         .offset(x: 44, y: -46)
                 }
 
-                ChatBadge(isOpen: visualState.isChatOpen)
-                    .frame(width: 38, height: 38)
-                    .offset(x: 45, y: -47)
+                if visualState.featureMode.showsChatBadge {
+                    ChatBadge(isOpen: visualState.isChatOpen)
+                        .frame(width: 38, height: 38)
+                        .offset(x: 45, y: -47)
+                }
             }
             .saturation(pausedTint)
             .frame(width: 132, height: 132)
