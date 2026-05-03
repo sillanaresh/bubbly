@@ -5,7 +5,7 @@ struct BubbleView: View {
     @State private var pop = false
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 1.0 / 3.0)) { timeline in
+        TimelineView(.periodic(from: .now, by: 1.0 / 8.0)) { timeline in
             let time = timeline.date.timeIntervalSinceReferenceDate
             let breath = visualState.isPaused ? 1 : 1 + sin(time * visualState.mood.breathRate) * visualState.mood.breathAmount
             let bob = visualState.isPaused ? 0 : sin(time * visualState.mood.bobRate) * visualState.mood.bobAmount

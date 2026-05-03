@@ -18,8 +18,8 @@ final class FloatingBubbleController {
     private var window: NSPanel?
     private var preferences: BubblePreferences
     private var movementTimer: Timer?
+    private var wanderRestTimer: Timer?
     private var wanderMotion: WanderMotion?
-    private var nextWanderAt = Date.distantPast
     private var lastPositionSave = Date.distantPast
     private var isPinnedForChat = false
     private var pauseStateBeforeChat: Bool?
@@ -357,11 +357,42 @@ final class FloatingBubbleController {
             return
         }
 
-        guard movementTimer == nil else {
+        guard movementTimer == nil, wanderRestTimer == nil, wanderMotion == nil else {
             return
         }
 
-        let timer = Timer(timeInterval: 1.0 / 18.0, repeats: true) { [weak self] _ in
+        scheduleNextWander(after: Double.random(in: 0.4...1.2))
+    }
+
+    private func scheduleNextWander(after delay: TimeInterval) {
+        guard preferences.isVisible, !preferences.isPaused, !isPinnedForChat else {
+            return
+        }
+
+        wanderRestTimer?.invalidate()
+        let timer = Timer(timeInterval: delay, repeats: false) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.wanderRestTimer = nil
+                self?.beginWander()
+            }
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        wanderRestTimer = timer
+    }
+
+    private func beginWander() {
+        guard preferences.isVisible, !preferences.isPaused, !isPinnedForChat, movementTimer == nil, let window else {
+            return
+        }
+
+        guard let visibleFrame = currentVisibleFrame() else {
+            return
+        }
+
+        let now = Date()
+        wanderMotion = makeWanderMotion(from: window.frame.origin, visibleFrame: visibleFrame, startedAt: now)
+
+        let timer = Timer(timeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated {
                 self?.tickMovement()
             }
@@ -373,30 +404,21 @@ final class FloatingBubbleController {
     private func stopMovement() {
         movementTimer?.invalidate()
         movementTimer = nil
+        wanderRestTimer?.invalidate()
+        wanderRestTimer = nil
         wanderMotion = nil
     }
 
     private func tickMovement() {
-        guard preferences.isVisible, !preferences.isPaused, !isPinnedForChat, let window else {
-            return
-        }
-
-        guard let visibleFrame = currentVisibleFrame() else {
+        guard preferences.isVisible, !preferences.isPaused, !isPinnedForChat else {
             return
         }
 
         let now = Date()
-        let current = window.frame.origin
-
-        if wanderMotion == nil {
-            guard now >= nextWanderAt else {
-                return
-            }
-
-            wanderMotion = makeWanderMotion(from: current, visibleFrame: visibleFrame, startedAt: now)
-        }
-
         guard let motion = wanderMotion else {
+            movementTimer?.invalidate()
+            movementTimer = nil
+            scheduleNextWander(after: Double.random(in: 6.5...11.0))
             return
         }
 
@@ -405,8 +427,13 @@ final class FloatingBubbleController {
         setWindowOrigin(motion.point(at: easedProgress), persist: false)
 
         if rawProgress >= 1 {
+            setWindowOrigin(motion.end, persist: false)
+            movementTimer?.invalidate()
+            movementTimer = nil
             wanderMotion = nil
-            nextWanderAt = now.addingTimeInterval(Double.random(in: 7.0...12.0))
+            persistCurrentState()
+            lastPositionSave = now
+            scheduleNextWander(after: Double.random(in: 6.5...11.0))
         }
 
         if now.timeIntervalSince(lastPositionSave) > 3 {
