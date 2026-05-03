@@ -3,6 +3,7 @@ import SwiftUI
 struct EffectOverlayView: View {
     let action: BubbleAction
     let origin: CGPoint
+    let seed: Double
 
     @State private var animate = false
 
@@ -45,10 +46,10 @@ struct EffectOverlayView: View {
                 let startY = -80 - random(index, 13) * size.height * 0.95
                 let endY = size.height + 90 + random(index, 14) * 180
 
-                Capsule()
-                    .fill(Color(red: 0.34, green: 0.65, blue: 0.95).opacity(animate ? 0.04 : Double(0.36 + random(index, 15) * 0.42)))
-                    .frame(width: CGFloat(1.5 + random(index, 16) * 2.4), height: CGFloat(18 + random(index, 17) * 34))
-                    .rotationEffect(.degrees(10 + Double(signedRandom(index, 18) * 8)))
+                Image(systemName: "drop.fill")
+                    .font(.system(size: CGFloat(8 + random(index, 16) * 10), weight: .semibold))
+                    .foregroundStyle(Color(red: 0.30, green: 0.62, blue: 0.95).opacity(animate ? 0.04 : Double(0.32 + random(index, 15) * 0.42)))
+                    .rotationEffect(.degrees(8 + Double(signedRandom(index, 18) * 10)))
                     .blur(radius: index.isMultiple(of: 4) ? 0.5 : 0)
                     .position(
                         x: x + (animate ? drift : -drift * 0.18),
@@ -68,9 +69,9 @@ struct EffectOverlayView: View {
                 let localY = signedRandom(index, 25) * CGFloat(34 + cluster * 3)
 
                 Circle()
-                    .fill(Color.white.opacity(animate ? 0 : 0.70))
+                    .fill(Color(red: 0.82, green: 0.92, blue: 1.0).opacity(animate ? 0 : 0.86))
                     .frame(width: CGFloat(46 + random(index, 26) * 74))
-                    .shadow(color: Color.black.opacity(0.10), radius: 10, y: 4)
+                    .shadow(color: Color(red: 0.20, green: 0.38, blue: 0.56).opacity(0.14), radius: 12, y: 4)
                     .position(
                         x: clusterX + localX + (animate ? 90 + random(index, 27) * 80 : -40),
                         y: clusterY + localY - (animate ? 18 + random(index, 28) * 36 : 0)
@@ -135,7 +136,7 @@ struct EffectOverlayView: View {
     }
 
     private func random(_ index: Int, _ salt: Double) -> CGFloat {
-        let value = sin(Double(index) * 12.9898 + salt * 78.233) * 43758.5453
+        let value = sin(Double(index) * 12.9898 + (salt + seed) * 78.233) * 43758.5453
         return CGFloat(value - floor(value))
     }
 

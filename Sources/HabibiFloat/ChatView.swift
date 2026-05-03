@@ -262,7 +262,7 @@ struct ChatView: View {
                 Spacer(minLength: 36)
             }
 
-            Text(message.content)
+            messageText(message)
                 .font(.system(size: 13))
                 .textSelection(.enabled)
                 .padding(.horizontal, 12)
@@ -278,6 +278,21 @@ struct ChatView: View {
             }
         }
         .padding(.horizontal, 14)
+    }
+
+    private func messageText(_ message: AIChatMessage) -> Text {
+        guard message.role == .assistant else {
+            return Text(message.content)
+        }
+
+        if let attributed = try? AttributedString(
+            markdown: message.content,
+            options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        ) {
+            return Text(attributed)
+        }
+
+        return Text(message.content)
     }
 }
 
