@@ -212,62 +212,156 @@ h1 {
   min-width: 0;
 }
 
-.icon-stage {
+.bubbly-stage {
   position: relative;
-  display: grid;
-  place-items: center;
+  width: min(100%, 430px);
+  min-height: 430px;
+}
+
+.bubbly-stage::after {
+  position: absolute;
+  right: 22%;
+  bottom: 12%;
+  width: 46%;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(56, 94, 130, 0.1);
+  filter: blur(10px);
+  content: "";
+}
+
+.bubbly-drift {
+  position: absolute;
+  inset: 8% 6% auto auto;
+  width: 76%;
+  aspect-ratio: 1;
+  animation: pageWander 9s ease-in-out infinite;
+}
+
+.bubbly-face,
+.floating-bubbly {
+  border: 5px solid rgba(255, 255, 255, 0.72);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.54) 0 13%, transparent 14%),
+    linear-gradient(145deg, #94d9ef 0%, #70b9e7 42%, #5c89ce 100%);
+  box-shadow:
+    inset 0 -18px 28px rgba(37, 88, 150, 0.15),
+    0 28px 64px rgba(45, 94, 153, 0.2);
+}
+
+.bubbly-face {
+  position: relative;
   width: min(100%, 420px);
   aspect-ratio: 1;
-  border: 1px solid rgba(255, 255, 255, 0.74);
-  border-radius: 8px;
-  background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.7), rgba(223, 245, 255, 0.58)),
-    linear-gradient(45deg, rgba(255, 159, 189, 0.22), rgba(191, 234, 214, 0.28));
-  box-shadow: var(--shadow);
+  animation: breathe 5.4s ease-in-out infinite;
 }
 
-.app-icon-image {
-  position: relative;
-  width: 68%;
-  aspect-ratio: 1;
-  border-radius: 30%;
-  object-fit: contain;
-  box-shadow:
-    inset 0 -22px 34px rgba(28, 91, 148, 0.18),
-    0 34px 66px rgba(38, 114, 184, 0.28);
-  animation: floaty 5.8s ease-in-out infinite;
-}
-
-.mini-chat {
+.bubble-shine,
+.bubble-eye,
+.bubble-cheek,
+.bubble-smile,
+.tiny-shine,
+.tiny-eye,
+.tiny-cheek,
+.tiny-smile {
   position: absolute;
-  right: 5%;
-  bottom: 15%;
-  display: grid;
-  gap: 8px;
-  width: 32%;
-  padding: 16px;
+  display: block;
+}
+
+.bubble-shine.large {
+  top: 17%;
+  left: 16%;
+  width: 23%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(227, 250, 255, 0.74);
+}
+
+.bubble-shine.small {
+  top: 5%;
+  right: 1%;
+  width: 26%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.bubble-eye {
+  top: 42%;
+  width: 9%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 34%, rgba(255, 255, 255, 0.92) 0 16%, transparent 17%),
+    #182941;
+  animation: blink 7s ease-in-out infinite;
+}
+
+.bubble-eye.left {
+  left: 32%;
+}
+
+.bubble-eye.right {
+  right: 32%;
+}
+
+.bubble-cheek {
+  top: 60%;
+  width: 9%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(201, 139, 203, 0.62);
+}
+
+.bubble-cheek.left {
+  left: 24%;
+}
+
+.bubble-cheek.right {
+  right: 24%;
+}
+
+.bubble-smile {
+  left: 39%;
+  bottom: 30%;
+  width: 22%;
+  height: 12%;
+  border-bottom: 7px solid rgba(24, 41, 65, 0.84);
+  border-radius: 0 0 999px 999px;
+}
+
+.desktop-badge {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 62px;
+  min-height: 42px;
+  padding: 0 14px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.86);
   box-shadow: 0 16px 38px rgba(44, 79, 114, 0.15);
+  color: #536171;
+  font-size: 0.88rem;
+  font-weight: 760;
 }
 
-.mini-chat span {
-  display: block;
-  height: 8px;
-  border-radius: 999px;
-  background: #d6e2eb;
+.chat-badge {
+  right: 0;
+  bottom: 20%;
+  animation: badgeFloat 5.4s ease-in-out infinite;
 }
 
-.mini-chat span:nth-child(2) {
-  width: 72%;
-  background: #c7eddd;
+.rain-badge {
+  left: 4%;
+  bottom: 5%;
+  background: rgba(239, 250, 255, 0.88);
+  animation: badgeFloat 6.2s ease-in-out infinite reverse;
 }
 
-.mini-chat span:nth-child(3) {
-  width: 52%;
-  background: #ffe0ef;
-}
 
 .preview-section,
 .features-section {
@@ -339,43 +433,69 @@ h2 {
   top: 30%;
   width: clamp(88px, 15vw, 136px);
   aspect-ratio: 1;
-  border: 5px solid rgba(255, 255, 255, 0.7);
-  border-radius: 32%;
-  background:
-    radial-gradient(circle at 33% 24%, rgba(255, 255, 255, 0.84) 0 15%, transparent 16%),
-    linear-gradient(145deg, #faffff, #71c9ed 55%, #357dbf);
-  box-shadow: 0 20px 44px rgba(38, 114, 184, 0.22);
   animation: wander 6.4s ease-in-out infinite;
 }
 
-.tiny-eye,
-.tiny-smile {
-  position: absolute;
-  display: block;
-  background: #132235;
+.tiny-shine.large {
+  top: 18%;
+  left: 16%;
+  width: 24%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(227, 250, 255, 0.78);
+}
+
+.tiny-shine.small {
+  top: 5%;
+  right: 1%;
+  width: 24%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.84);
 }
 
 .tiny-eye {
-  top: 45%;
+  top: 42%;
   width: 8%;
-  height: 16%;
-  border-radius: 999px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 34%, rgba(255, 255, 255, 0.92) 0 16%, transparent 17%),
+    #182941;
+  animation: blink 7s ease-in-out infinite;
 }
 
 .tiny-eye.left {
-  left: 36%;
+  left: 32%;
 }
 
 .tiny-eye.right {
-  right: 36%;
+  right: 32%;
+}
+
+.tiny-cheek {
+  top: 60%;
+  width: 9%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(201, 139, 203, 0.62);
+}
+
+.tiny-cheek.left {
+  left: 24%;
+}
+
+.tiny-cheek.right {
+  right: 24%;
 }
 
 .tiny-smile {
-  left: 43%;
-  bottom: 27%;
-  width: 14%;
-  height: 6%;
-  border-radius: 999px;
+  left: 39%;
+  bottom: 30%;
+  width: 22%;
+  height: 12%;
+  border-bottom: 4px solid rgba(24, 41, 65, 0.84);
+  border-radius: 0 0 999px 999px;
 }
 
 .chat-panel {
@@ -453,6 +573,10 @@ h2 {
   background: rgba(255, 248, 252, 0.86);
 }
 
+.feature-card.quiet-card {
+  background: rgba(246, 255, 250, 0.86);
+}
+
 .feature-card h3 {
   margin-bottom: 10px;
   font-size: 1.16rem;
@@ -516,6 +640,56 @@ h2 {
   }
 }
 
+@keyframes pageWander {
+  0%,
+  100% {
+    transform: translate(-18px, 8px) rotate(-2deg);
+  }
+
+  32% {
+    transform: translate(18px, -16px) rotate(1deg);
+  }
+
+  66% {
+    transform: translate(6px, 18px) rotate(-1deg);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.025);
+  }
+}
+
+@keyframes blink {
+  0%,
+  88%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  90% {
+    transform: scaleY(0.12);
+  }
+}
+
+@keyframes badgeFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
 @keyframes wander {
   0%,
   100% {
@@ -542,8 +716,9 @@ h2 {
     order: -1;
   }
 
-  .icon-stage {
+  .bubbly-stage {
     width: min(100%, 340px);
+    min-height: 340px;
   }
 
   .feature-grid {
@@ -613,8 +788,9 @@ h2 {
     padding-bottom: 18px;
   }
 
-  .icon-stage {
+  .bubbly-stage {
     width: min(100%, 220px);
+    min-height: 240px;
   }
 
   .hero-actions,
