@@ -1,85 +1,119 @@
-# Habibi Float
+# Bubbly
 
-Habibi Float is a tiny native macOS companion app. It shows a custom 2D jelly-bubble pet that floats above the desktop, wanders gently, reacts to clicks, and stays controllable from the menu bar.
+**A tiny floating companion for your Mac.**
 
-## Local Development
+Bubbly lives on your desktop as a soft, playful little presence. It floats while you work, reacts when you click it, keeps you company, and opens into a lightweight chat assistant when you need a quick answer.
 
-Run tests:
+It is not trying to become another full-screen productivity app. Bubbly is meant to feel like something small, alive, and useful that quietly belongs on your screen.
 
-```sh
-swift test
-```
+## Why Bubbly Exists
 
-Build the release executable:
+Most desktop tools are either serious utilities or distracting toys. Bubbly sits between those worlds.
 
-```sh
-swift build -c release
-```
+It gives your Mac a little personality without taking over your workspace. It can be calm when you want focus, playful when you want a break, and helpful when you want to ask something quickly.
 
-Build a local `.app` bundle:
+The idea is simple: your assistant should not always need to live inside a tab, sidebar, or giant app window. Sometimes it can just be a tiny bubble floating beside you.
 
-```sh
-./scripts/build-app.sh
-```
+## The Experience
 
-To configure Bubbly Free chat in the app bundle, pass the deployed backend URL at build time:
+Bubbly appears as a floating bubble on your desktop. It gently breathes, blinks, bobs, and wanders around the screen. You can drag it anywhere, pause it, hide it, change how it looks, or let it quietly drift while you work.
 
-```sh
-HABIBI_CHAT_BACKEND_URL="https://your-worker.example/v1/chat" ./scripts/build-app.sh
-```
+Clicking Bubbly gives a small bounce and bubbly sound. Opening chat pins Bubbly in place and shows a compact floating chat window beside it. Closing chat lets Bubbly return to wandering.
 
-Launch it:
+Everything is intentionally small and lightweight. Bubbly should feel present, not demanding.
 
-```sh
-open "dist/Habibi Float.app"
-```
+## Chat With Bubbly
 
-Build a shareable unsigned DMG:
+Bubbly includes a small chat panel for quick questions, ideas, and friendly back-and-forth.
 
-```sh
-./scripts/package-dmg.sh
-```
+There are two chat options:
 
-## Controls
+- **Bubbly Free** gives casual access with 30 free messages.
+- **Advanced** lets someone use their own OpenRouter key and model id.
 
-- Drag the bubble to move it.
-- Click the bubble for a happy bounce.
-- Double-click the bubble to pause or resume wandering.
-- Right-click the bubble for controls.
-- Click the small chat badge to pin the bubble and open chat.
-- Use the menu bar icon to show, hide, pause, reset, change sounds, open About, or quit.
-- Use `Theme` to change the pet colors.
-- Use `Mood` to switch between Happy, Sleepy, Shy, and Focus.
-- Use `Character` to switch between Bubble, Dot, Sprout, and Star.
-- Use `Smart Positioning` to keep wandering biased away from common active app controls.
-- Use `Click Sound` to choose between Water Drop, Soft Bloop, Jelly Pop, Budak, Bubble Chime, or No Sound.
-- Use `Sound Volume` to choose Soft, Normal, or Loud.
+Bubbly is designed to answer as itself. If you ask who it is, it should say it is Bubbly from Habibi Float, not some random model name.
 
-## Distribution
+## Feature Modes
 
-DMG packaging creates `dist/Habibi Float.dmg`. It contains the app plus an `/Applications` shortcut.
+Bubbly can change how much it brings onto the screen.
 
-## AI Chat
+- **Carefree**: just Bubbly floating around, with no extra action icons.
+- **Chatty**: Bubbly shows only the chat button.
+- **Playtime**: Bubbly shows playful desktop effects like rain, clouds, butterflies, cannon bursts, and sparkles.
+- **Bubbly Max**: chat plus every playful effect.
 
-The chat badge opens a compact floating panel next to the pet. Closing the panel unpins the pet and restores the previous pause or running state.
+This keeps the app flexible. Some people may want only a calm desktop pet. Others may want the full playful version.
 
-Chat supports three modes:
+## Playful Effects
 
-- `Bubbly Free`: calls the configured Habibi backend at `POST /v1/chat`.
-- `Your OpenRouter Key`: stores a user-provided OpenRouter key in macOS Keychain and calls OpenRouter directly.
-- `Offline`: disables network chat.
+Bubbly can trigger short desktop animations from buttons around the bubble.
 
-The Bubbly Free backend lives in `backend/`. It proxies OpenRouter, enforces daily per-device limits, has a global guard, and keeps the OpenRouter key in Cloudflare environment secrets.
+- **Rain** brings raindrops across the desktop.
+- **Clouds** creates soft drifting clouds.
+- **Butterflies** sends light floating shapes upward.
+- **Cannon** bursts colorful particles across the screen.
+- **Sparkles** adds a quick glitter moment.
 
-## Friend Notes
+These effects are meant to be brief and delightful, not permanent decorations.
 
-Habibi Float keeps pet behavior local. Chat uses the network only when a message is sent:
+## Customization
 
-- It does not track anything.
-- It does not collect analytics.
-- It saves local preferences like position, pause state, selected sound, anonymous chat device ID, and selected chat mode.
-- User OpenRouter keys are stored in macOS Keychain, not UserDefaults.
+Bubbly can be tuned to feel more personal.
 
-To close it, use the menu bar icon and choose `Quit Habibi Float`.
+- **Themes** change the color palette.
+- **Moods** change the expression and animation feel.
+- **Characters** change the bubble shape.
+- **Sounds** change the click reaction.
+- **Volume** controls how noticeable the sound is.
+- **Smart Positioning** helps Bubbly avoid common active app controls.
 
-When shared as an unsigned app, macOS may show a security warning. Friends may need to right-click the app and choose `Open`. Developer ID signing and notarization can be added later for smoother public distribution.
+The goal is not endless settings. The goal is enough personality that Bubbly feels like yours.
+
+## Privacy And Control
+
+Bubbly is local-first in spirit.
+
+Its position, theme, mood, sounds, feature mode, and other preferences stay on the Mac. Chat only uses the network when a message is sent.
+
+If someone uses Advanced chat, their OpenRouter key is saved in macOS Keychain.
+
+## Sharing Bubbly
+
+Bubbly is currently an early Mac app shared through a DMG.
+
+Download:
+
+`dist/Habibi Float v1.dmg`
+
+Because this early version is not notarized yet, macOS may warn that it cannot verify the app. The first time, right-click the app and choose **Open**.
+
+## Current Status
+
+Bubbly is still early, but already includes:
+
+- floating desktop bubble
+- gentle wandering
+- breathing, blinking, bobbing, and click bounce
+- themes, moods, and characters
+- bubbly click sounds
+- menu bar controls
+- compact chat panel
+- Bubbly Free and Advanced chat modes
+- playful desktop effects
+- DMG packaging for sharing
+
+## Product Direction
+
+Bubbly is becoming a small companion platform for the desktop.
+
+Near-term ideas:
+
+- better effect animations
+- richer Bubbly expressions
+- cleaner onboarding
+- a public download page
+- smoother update flow
+- more companion actions around the bubble
+
+Longer term, Bubbly could become a personal assistant that feels native to the desktop instead of trapped inside a browser tab.
+
