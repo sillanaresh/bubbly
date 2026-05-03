@@ -10,7 +10,7 @@ CONTENTS_PATH="${APP_PATH}/Contents"
 MACOS_PATH="${CONTENTS_PATH}/MacOS"
 RESOURCES_PATH="${CONTENTS_PATH}/Resources"
 ICON_PATH="${RESOURCES_PATH}/AppIcon.icns"
-CHAT_BACKEND_URL="${HABIBI_CHAT_BACKEND_URL:-}"
+CHAT_BACKEND_URL="${HABIBI_CHAT_BACKEND_URL:-https://habibi-float-api.habibi-float.workers.dev/v1/chat}"
 
 swift build -c release
 

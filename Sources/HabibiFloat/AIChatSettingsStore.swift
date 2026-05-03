@@ -1,6 +1,8 @@
 import Foundation
 
 final class AIChatSettingsStore {
+    private static let defaultSponsoredEndpoint = URL(string: "https://habibi-float-api.habibi-float.workers.dev/v1/chat")
+
     private enum Key {
         static let providerMode = "habibiFloat.chat.providerMode"
         static let deviceID = "habibiFloat.chat.deviceID"
@@ -43,7 +45,7 @@ final class AIChatSettingsStore {
                 return URL(string: value)
             }
 
-            return nil
+            return Self.defaultSponsoredEndpoint
         }
         set {
             if let newValue {

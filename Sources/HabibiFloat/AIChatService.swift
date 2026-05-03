@@ -64,7 +64,7 @@ final class AIChatService {
 
     private func sendOpenRouter(messages: [AIChatWireMessage], apiKey: String) async throws -> AIChatResult {
         let payload = OpenRouterRequest(
-            model: "openai/gpt-4o-mini",
+            model: "openrouter/free",
             messages: messages,
             maxTokens: 700
         )
