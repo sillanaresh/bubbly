@@ -23,9 +23,9 @@ final class StatusMenuController: NSObject {
     }
 
     func makeMenu() -> NSMenu {
-        let menu = NSMenu(title: "Habibi Float")
+        let menu = NSMenu(title: "Bubbly")
 
-        let titleItem = NSMenuItem(title: "Habibi Float", action: nil, keyEquivalent: "")
+        let titleItem = NSMenuItem(title: "Bubbly", action: nil, keyEquivalent: "")
         titleItem.isEnabled = false
         menu.addItem(titleItem)
         menu.addItem(.separator())
@@ -47,8 +47,8 @@ final class StatusMenuController: NSObject {
         menu.addItem(soundMenu())
         menu.addItem(volumeMenu())
         menu.addItem(.separator())
-        menu.addItem(item("About Habibi Float", action: #selector(showAbout)))
-        menu.addItem(item("Quit Habibi Float", action: #selector(quitApp), key: "q"))
+        menu.addItem(item("About Bubbly", action: #selector(showAbout)))
+        menu.addItem(item("Quit Bubbly", action: #selector(quitApp), key: "q"))
 
         return menu
     }
@@ -293,7 +293,7 @@ final class StatusMenuController: NSObject {
 
         image.unlockFocus()
         image.isTemplate = true
-        image.accessibilityDescription = "Habibi Float"
+        image.accessibilityDescription = "Bubbly"
         return image
     }
 }

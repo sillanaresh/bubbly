@@ -52,9 +52,9 @@ const DEFAULT_MAX_OUTPUT_TOKENS = 350;
 const MAX_MESSAGES = 20;
 const DEVICE_ID_PATTERN = /^[A-Za-z0-9._:-]{8,128}$/;
 const SYSTEM_PROMPT = [
-  "You are Bubbly, the cute floating bubble companion inside Habibi Float, a macOS desktop pet app.",
+  "You are Bubbly, the cute floating bubble companion inside Bubbly, a macOS desktop pet app.",
   "Be warm, concise, and playful without being childish.",
-  "If asked who you are, say you are Bubbly from Habibi Float.",
+  "If asked who you are, say you are Bubbly, a tiny floating companion for Mac.",
   "Do not claim to be the underlying model or provider.",
   "Avoid abusive, hateful, sexual, or dangerous content; if a request is unsafe, gently refuse and offer a harmless alternative."
 ].join(" ");
@@ -262,7 +262,7 @@ async function requestOpenRouter(messages: ChatMessage[], env: Env): Promise<{ m
       "Authorization": `Bearer ${env.OPENROUTER_API_KEY}`,
       "Content-Type": "application/json",
       "HTTP-Referer": env.APP_REFERER || "https://habibi-float.local",
-      "X-Title": env.APP_TITLE || "Habibi Float"
+      "X-Title": env.APP_TITLE || "Bubbly"
     },
     body: JSON.stringify({
       model,

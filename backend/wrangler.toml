@@ -8,7 +8,7 @@ DAILY_DEVICE_LIMIT = "50"
 GLOBAL_DAILY_LIMIT = "1000"
 MAX_INPUT_CHARS = "8000"
 MAX_OUTPUT_TOKENS = "350"
-APP_TITLE = "Habibi Float"
+APP_TITLE = "Bubbly"
 APP_REFERER = "https://habibi-float.local"
 
 [[kv_namespaces]]

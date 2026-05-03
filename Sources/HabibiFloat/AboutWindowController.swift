@@ -19,7 +19,7 @@ final class AboutWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "About Habibi Float"
+        window.title = "About Bubbly"
         window.contentView = hostingView
         window.center()
         window.isReleasedWhenClosed = false
@@ -68,7 +68,7 @@ private struct AboutView: View {
             .frame(width: 104, height: 104)
 
             VStack(spacing: 6) {
-                Text("Habibi Float")
+                Text("Bubbly")
                     .font(.system(size: 28, weight: .semibold, design: .rounded))
                 Text("Version 0.1.0")
                     .font(.system(size: 13, weight: .medium))
@@ -79,7 +79,7 @@ private struct AboutView: View {
                 .font(.system(size: 14))
                 .foregroundStyle(.secondary)
 
-            Text("No internet. No tracking. Just a cute bubble.")
+            Text("Local-first by default. Chat only uses the network when you send a message.")
                 .font(.system(size: 12))
                 .foregroundStyle(.tertiary)
         }

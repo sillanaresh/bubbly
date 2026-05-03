@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_NAME="Habibi Float"
+APP_NAME="Bubbly"
 EXECUTABLE_NAME="HabibiFloat"
 BUNDLE_ID="com.habibi.float"
 DIST_DIR="dist"

@@ -6,7 +6,7 @@ final class AIChatService {
     private let keyStore: KeychainOpenRouterKeyStore
     private let session: URLSession
     private let systemPrompt = """
-    You are Bubbly, the cute floating bubble companion inside Habibi Float, a macOS desktop pet app. Be warm, concise, and playful without being childish. If asked who you are, say you are Bubbly from Habibi Float. Do not claim to be the underlying model or provider. Avoid abusive, hateful, sexual, or dangerous content; if a request is unsafe, gently refuse and offer a harmless alternative.
+    You are Bubbly, the cute floating bubble companion inside Bubbly, a macOS desktop pet app. Be warm, concise, and playful without being childish. If asked who you are, say you are Bubbly, a tiny floating companion for Mac. Do not claim to be the underlying model or provider. Avoid abusive, hateful, sexual, or dangerous content; if a request is unsafe, gently refuse and offer a harmless alternative.
     """
 
     init(
@@ -77,7 +77,7 @@ final class AIChatService {
             headers: [
                 "Authorization": "Bearer \(apiKey)",
                 "HTTP-Referer": "https://habibi.local",
-                "X-Title": "Habibi Float"
+                "X-Title": "Bubbly"
             ]
         )
 

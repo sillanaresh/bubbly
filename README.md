@@ -28,7 +28,7 @@ Bubbly includes a small chat panel for quick questions, ideas, and friendly back
 
 Bubbly Free gives casual access with 50 free messages.
 
-Bubbly is designed to answer as itself. If you ask who it is, it should say it is Bubbly from Habibi Float, not some random model name.
+Bubbly is designed to answer as itself. If you ask who it is, it should say it is Bubbly, not some random model name.
 
 ## Feature Modes
 
@@ -80,7 +80,7 @@ Bubbly is currently an early Mac app shared through a DMG.
 
 Download:
 
-`dist/Habibi Float v1.dmg`
+`dist/Bubbly.dmg`
 
 Because this early version is not notarized yet, macOS may warn that it cannot verify the app. The first time, right-click the app and choose **Open**.
 

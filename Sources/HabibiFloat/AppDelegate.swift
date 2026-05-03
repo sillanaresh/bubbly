@@ -30,11 +30,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func makeMainMenu() -> NSMenu {
-        let mainMenu = NSMenu(title: "Habibi Float")
+        let mainMenu = NSMenu(title: "Bubbly")
 
         let appMenuItem = NSMenuItem()
-        let appMenu = NSMenu(title: "Habibi Float")
-        appMenu.addItem(NSMenuItem(title: "Quit Habibi Float", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        let appMenu = NSMenu(title: "Bubbly")
+        appMenu.addItem(NSMenuItem(title: "Quit Bubbly", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         appMenuItem.submenu = appMenu
         mainMenu.addItem(appMenuItem)
 
