@@ -65,7 +65,7 @@ Bubbly can be tuned to feel more personal.
 
 - **Themes** change the color palette.
 - **Moods** change the expression and animation feel.
-- **Characters** change the bubble shape.
+- **Characters** change who stays with you: Bubbly, Baby Cat, Baby Dog, and other playful shapes.
 - **Sounds** change the click reaction.
 - **Volume** controls how noticeable the sound is.
 - **Smart Positioning** helps Bubbly avoid common active app controls.

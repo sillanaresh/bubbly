@@ -79,13 +79,17 @@ enum BubbleMood: String, CaseIterable {
 
 enum BubbleCharacter: String, CaseIterable {
     case bubble
+    case kitten
+    case puppy
     case dot
     case sprout
     case star
 
     var title: String {
         switch self {
-        case .bubble: "Bubble"
+        case .bubble: "Bubbly"
+        case .kitten: "Baby Cat"
+        case .puppy: "Baby Dog"
         case .dot: "Dot"
         case .sprout: "Sprout"
         case .star: "Star"
@@ -170,6 +174,22 @@ enum BubbleAction: String, CaseIterable {
         case .butterflies: CGSize(width: -42, height: 49)
         case .cannon: CGSize(width: 42, height: 49)
         case .sparkles: CGSize(width: 61, height: 0)
+        }
+    }
+
+    func offset(for character: BubbleCharacter) -> CGSize {
+        switch character {
+        case .kitten, .puppy:
+            switch self {
+            case .chat: CGSize(width: 0, height: -54)
+            case .rain: CGSize(width: -58, height: -20)
+            case .cloud: CGSize(width: -58, height: 24)
+            case .butterflies: CGSize(width: -30, height: 56)
+            case .cannon: CGSize(width: 30, height: 56)
+            case .sparkles: CGSize(width: 58, height: 24)
+            }
+        case .bubble, .dot, .sprout, .star:
+            offset
         }
     }
 

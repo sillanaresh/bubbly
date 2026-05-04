@@ -61,7 +61,7 @@ struct BubbleView: View {
                 ForEach(showsBadges ? visualState.featureMode.enabledActions : [], id: \.self) { action in
                     ActionBadge(action: action, isOpen: action == .chat && visualState.isChatOpen)
                         .frame(width: 34, height: 34)
-                        .offset(action.offset)
+                        .offset(action.offset(for: visualState.character))
                 }
             }
             .saturation(pausedTint)
@@ -144,6 +144,105 @@ private struct CharacterBody: View {
                     Circle()
                         .stroke(Color.white.opacity(0.56), lineWidth: 4)
                 )
+        case .kitten:
+            ZStack {
+                CatEar()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color(red: 1.0, green: 0.88, blue: 0.76),
+                                Color(red: 0.93, green: 0.68, blue: 0.48)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .frame(width: 44, height: 48)
+                    .rotationEffect(.degrees(-18))
+                    .offset(x: -43, y: -47)
+
+                CatEar()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color(red: 1.0, green: 0.88, blue: 0.76),
+                                Color(red: 0.93, green: 0.68, blue: 0.48)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .frame(width: 44, height: 48)
+                    .rotationEffect(.degrees(18))
+                    .offset(x: 43, y: -47)
+
+                CatEar()
+                    .fill(Color(red: 1.0, green: 0.58, blue: 0.66).opacity(0.62))
+                    .frame(width: 22, height: 25)
+                    .rotationEffect(.degrees(-18))
+                    .offset(x: -42, y: -43)
+
+                CatEar()
+                    .fill(Color(red: 1.0, green: 0.58, blue: 0.66).opacity(0.62))
+                    .frame(width: 22, height: 25)
+                    .rotationEffect(.degrees(18))
+                    .offset(x: 42, y: -43)
+
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            colors: [
+                                Color(red: 1.0, green: 0.96, blue: 0.88),
+                                Color(red: 0.96, green: 0.74, blue: 0.52),
+                                Color(red: 0.82, green: 0.50, blue: 0.35)
+                            ],
+                            center: .topLeading,
+                            startRadius: 8,
+                            endRadius: 94
+                        )
+                    )
+                    .overlay(
+                        Circle()
+                            .stroke(Color.white.opacity(0.56), lineWidth: 4)
+                    )
+            }
+        case .puppy:
+            ZStack {
+                Capsule()
+                    .fill(Color(red: 0.59, green: 0.36, blue: 0.23))
+                    .frame(width: 35, height: 66)
+                    .rotationEffect(.degrees(-24))
+                    .offset(x: -50, y: -22)
+
+                Capsule()
+                    .fill(Color(red: 0.59, green: 0.36, blue: 0.23))
+                    .frame(width: 35, height: 66)
+                    .rotationEffect(.degrees(24))
+                    .offset(x: 50, y: -22)
+
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            colors: [
+                                Color(red: 1.0, green: 0.93, blue: 0.78),
+                                Color(red: 0.90, green: 0.63, blue: 0.39),
+                                Color(red: 0.72, green: 0.42, blue: 0.25)
+                            ],
+                            center: .topLeading,
+                            startRadius: 8,
+                            endRadius: 94
+                        )
+                    )
+                    .overlay(
+                        Circle()
+                            .stroke(Color.white.opacity(0.52), lineWidth: 4)
+                    )
+
+                Circle()
+                    .fill(Color(red: 0.48, green: 0.28, blue: 0.18).opacity(0.48))
+                    .frame(width: 42, height: 36)
+                    .offset(x: -29, y: -16)
+            }
         case .star:
             RoundedRectangle(cornerRadius: 34, style: .continuous)
                 .fill(gradient)
@@ -248,6 +347,8 @@ private extension BubbleCharacter {
     var bodySize: CGSize {
         switch self {
         case .bubble: CGSize(width: 132, height: 132)
+        case .kitten: CGSize(width: 132, height: 132)
+        case .puppy: CGSize(width: 132, height: 132)
         case .dot: CGSize(width: 118, height: 118)
         case .sprout: CGSize(width: 126, height: 126)
         case .star: CGSize(width: 122, height: 122)
@@ -257,6 +358,8 @@ private extension BubbleCharacter {
     var highlightSize: CGSize {
         switch self {
         case .bubble: CGSize(width: 46, height: 30)
+        case .kitten: CGSize(width: 38, height: 24)
+        case .puppy: CGSize(width: 36, height: 22)
         case .dot: CGSize(width: 38, height: 24)
         case .sprout: CGSize(width: 42, height: 26)
         case .star: CGSize(width: 34, height: 22)
@@ -266,6 +369,8 @@ private extension BubbleCharacter {
     var highlightOffset: CGSize {
         switch self {
         case .bubble: CGSize(width: -31, height: -35)
+        case .kitten: CGSize(width: -26, height: -34)
+        case .puppy: CGSize(width: -22, height: -34)
         case .dot: CGSize(width: -26, height: -30)
         case .sprout: CGSize(width: -28, height: -32)
         case .star: CGSize(width: -20, height: -28)
@@ -276,6 +381,33 @@ private extension BubbleCharacter {
         switch self {
         case .bubble, .dot:
             EmptyView()
+        case .kitten:
+            ZStack {
+                CatWhiskers()
+                    .stroke(
+                        Color(red: 0.27, green: 0.16, blue: 0.12).opacity(0.62),
+                        style: StrokeStyle(lineWidth: 2, lineCap: .round)
+                    )
+                    .frame(width: 78, height: 24)
+                    .offset(y: 12)
+
+                Capsule()
+                    .fill(Color(red: 0.92, green: 0.34, blue: 0.43))
+                    .frame(width: 9, height: 7)
+                    .offset(y: 8)
+            }
+        case .puppy:
+            ZStack {
+                Capsule()
+                    .fill(Color(red: 0.16, green: 0.09, blue: 0.07))
+                    .frame(width: 14, height: 10)
+                    .offset(y: 8)
+
+                Capsule()
+                    .fill(Color(red: 1.0, green: 0.45, blue: 0.50))
+                    .frame(width: 9, height: 14)
+                    .offset(y: 31)
+            }
         case .sprout:
             HStack(spacing: -3) {
                 Capsule()
@@ -304,6 +436,50 @@ private struct Smile: Shape {
             to: CGPoint(x: rect.maxX - 2, y: rect.minY + 3),
             control: CGPoint(x: rect.midX, y: rect.maxY - 1)
         )
+        return path
+    }
+}
+
+private struct CatEar: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+        path.addQuadCurve(
+            to: CGPoint(x: rect.maxX, y: rect.maxY),
+            control: CGPoint(x: rect.maxX - 2, y: rect.midY)
+        )
+        path.addQuadCurve(
+            to: CGPoint(x: rect.minX, y: rect.maxY),
+            control: CGPoint(x: rect.midX, y: rect.maxY + 6)
+        )
+        path.addQuadCurve(
+            to: CGPoint(x: rect.midX, y: rect.minY),
+            control: CGPoint(x: rect.minX + 2, y: rect.midY)
+        )
+        return path
+    }
+}
+
+private struct CatWhiskers: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let centerY = rect.midY
+        let gap: CGFloat = 10
+
+        path.move(to: CGPoint(x: rect.midX - gap, y: centerY - 4))
+        path.addLine(to: CGPoint(x: rect.minX + 3, y: centerY - 8))
+        path.move(to: CGPoint(x: rect.midX - gap, y: centerY + 1))
+        path.addLine(to: CGPoint(x: rect.minX, y: centerY + 1))
+        path.move(to: CGPoint(x: rect.midX - gap, y: centerY + 6))
+        path.addLine(to: CGPoint(x: rect.minX + 5, y: centerY + 10))
+
+        path.move(to: CGPoint(x: rect.midX + gap, y: centerY - 4))
+        path.addLine(to: CGPoint(x: rect.maxX - 3, y: centerY - 8))
+        path.move(to: CGPoint(x: rect.midX + gap, y: centerY + 1))
+        path.addLine(to: CGPoint(x: rect.maxX, y: centerY + 1))
+        path.move(to: CGPoint(x: rect.midX + gap, y: centerY + 6))
+        path.addLine(to: CGPoint(x: rect.maxX - 5, y: centerY + 10))
+
         return path
     }
 }
