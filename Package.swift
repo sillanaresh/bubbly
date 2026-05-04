@@ -15,6 +15,9 @@ let package = Package(
         .executableTarget(
             name: "HabibiFloat",
             dependencies: ["HabibiFloatCore"],
+            resources: [
+                .process("Resources")
+            ],
             linkerSettings: [
                 .linkedFramework("Security")
             ]

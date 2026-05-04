@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct BubbleView: View {
@@ -20,37 +21,41 @@ struct BubbleView: View {
                     .frame(width: bodyWidth, height: bodyHeight)
                     .scaleEffect(x: breath * (pop ? 1.08 : 1.0), y: (2 - breath) * (pop ? 0.94 : 1.0))
 
-                Circle()
-                    .fill(Color.white.opacity(0.42))
-                    .frame(width: visualState.character.highlightSize.width, height: visualState.character.highlightSize.height)
-                    .offset(visualState.character.highlightOffset)
-
-                visualState.character.accent
-                    .foregroundStyle(visualState.theme.colors.last ?? .blue)
-
-                HStack(spacing: 28) {
-                    Eye(height: blinkHeight)
-                    Eye(height: blinkHeight)
-                }
-                .offset(visualState.mood.eyeOffset)
-
-                HStack(spacing: 38) {
+                if visualState.character.usesSpriteArtwork {
+                    SpriteBlinkLids(character: visualState.character, isBlinking: blinkHeight <= 4)
+                } else {
                     Circle()
-                        .fill(Color(red: 1.0, green: 0.44, blue: 0.64).opacity(0.34))
-                        .frame(width: 18, height: 12)
-                    Circle()
-                        .fill(Color(red: 1.0, green: 0.44, blue: 0.64).opacity(0.34))
-                        .frame(width: 18, height: 12)
-                }
-                .offset(y: 18)
+                        .fill(Color.white.opacity(0.42))
+                        .frame(width: visualState.character.highlightSize.width, height: visualState.character.highlightSize.height)
+                        .offset(visualState.character.highlightOffset)
 
-                Smile()
-                    .stroke(
-                        Color(red: 0.08, green: 0.17, blue: 0.28).opacity(0.88),
-                        style: StrokeStyle(lineWidth: 4, lineCap: .round)
-                    )
-                    .frame(width: visualState.mood.smileSize.width, height: visualState.mood.smileSize.height)
-                    .offset(visualState.mood.smileOffset)
+                    visualState.character.accent
+                        .foregroundStyle(visualState.theme.colors.last ?? .blue)
+
+                    HStack(spacing: 28) {
+                        Eye(height: blinkHeight)
+                        Eye(height: blinkHeight)
+                    }
+                    .offset(visualState.mood.eyeOffset)
+
+                    HStack(spacing: 38) {
+                        Circle()
+                            .fill(Color(red: 1.0, green: 0.44, blue: 0.64).opacity(0.34))
+                            .frame(width: 18, height: 12)
+                        Circle()
+                            .fill(Color(red: 1.0, green: 0.44, blue: 0.64).opacity(0.34))
+                            .frame(width: 18, height: 12)
+                    }
+                    .offset(y: 18)
+
+                    Smile()
+                        .stroke(
+                            Color(red: 0.08, green: 0.17, blue: 0.28).opacity(0.88),
+                            style: StrokeStyle(lineWidth: 4, lineCap: .round)
+                        )
+                        .frame(width: visualState.mood.smileSize.width, height: visualState.mood.smileSize.height)
+                        .offset(visualState.mood.smileOffset)
+                }
 
                 if showsBadges, visualState.isPaused {
                     PauseBadge()
@@ -144,105 +149,8 @@ private struct CharacterBody: View {
                     Circle()
                         .stroke(Color.white.opacity(0.56), lineWidth: 4)
                 )
-        case .kitten:
-            ZStack {
-                CatEar()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color(red: 1.0, green: 0.88, blue: 0.76),
-                                Color(red: 0.93, green: 0.68, blue: 0.48)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .frame(width: 44, height: 48)
-                    .rotationEffect(.degrees(-18))
-                    .offset(x: -43, y: -47)
-
-                CatEar()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color(red: 1.0, green: 0.88, blue: 0.76),
-                                Color(red: 0.93, green: 0.68, blue: 0.48)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .frame(width: 44, height: 48)
-                    .rotationEffect(.degrees(18))
-                    .offset(x: 43, y: -47)
-
-                CatEar()
-                    .fill(Color(red: 1.0, green: 0.58, blue: 0.66).opacity(0.62))
-                    .frame(width: 22, height: 25)
-                    .rotationEffect(.degrees(-18))
-                    .offset(x: -42, y: -43)
-
-                CatEar()
-                    .fill(Color(red: 1.0, green: 0.58, blue: 0.66).opacity(0.62))
-                    .frame(width: 22, height: 25)
-                    .rotationEffect(.degrees(18))
-                    .offset(x: 42, y: -43)
-
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [
-                                Color(red: 1.0, green: 0.96, blue: 0.88),
-                                Color(red: 0.96, green: 0.74, blue: 0.52),
-                                Color(red: 0.82, green: 0.50, blue: 0.35)
-                            ],
-                            center: .topLeading,
-                            startRadius: 8,
-                            endRadius: 94
-                        )
-                    )
-                    .overlay(
-                        Circle()
-                            .stroke(Color.white.opacity(0.56), lineWidth: 4)
-                    )
-            }
-        case .puppy:
-            ZStack {
-                Capsule()
-                    .fill(Color(red: 0.59, green: 0.36, blue: 0.23))
-                    .frame(width: 35, height: 66)
-                    .rotationEffect(.degrees(-24))
-                    .offset(x: -50, y: -22)
-
-                Capsule()
-                    .fill(Color(red: 0.59, green: 0.36, blue: 0.23))
-                    .frame(width: 35, height: 66)
-                    .rotationEffect(.degrees(24))
-                    .offset(x: 50, y: -22)
-
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [
-                                Color(red: 1.0, green: 0.93, blue: 0.78),
-                                Color(red: 0.90, green: 0.63, blue: 0.39),
-                                Color(red: 0.72, green: 0.42, blue: 0.25)
-                            ],
-                            center: .topLeading,
-                            startRadius: 8,
-                            endRadius: 94
-                        )
-                    )
-                    .overlay(
-                        Circle()
-                            .stroke(Color.white.opacity(0.52), lineWidth: 4)
-                    )
-
-                Circle()
-                    .fill(Color(red: 0.48, green: 0.28, blue: 0.18).opacity(0.48))
-                    .frame(width: 42, height: 36)
-                    .offset(x: -29, y: -16)
-            }
+        case .kitten, .puppy:
+            SpriteCharacterBody(character: character)
         case .star:
             RoundedRectangle(cornerRadius: 34, style: .continuous)
                 .fill(gradient)
@@ -251,6 +159,45 @@ private struct CharacterBody: View {
                         .stroke(Color.white.opacity(0.56), lineWidth: 4)
                 )
         }
+    }
+}
+
+private struct SpriteCharacterBody: View {
+    let character: BubbleCharacter
+
+    var body: some View {
+        if let image = SpriteImageStore.image(for: character) {
+            Image(nsImage: image)
+                .resizable()
+                .scaledToFit()
+        } else {
+            Circle()
+                .fill(Color(red: 1.0, green: 0.78, blue: 0.42))
+                .overlay(
+                    Circle()
+                        .stroke(Color.white.opacity(0.56), lineWidth: 4)
+                )
+        }
+    }
+}
+
+private enum SpriteImageStore {
+    static func image(for character: BubbleCharacter) -> NSImage? {
+        guard character.usesSpriteArtwork else {
+            return nil
+        }
+
+        if let mainURL = Bundle.main.url(forResource: character.spriteAssetName, withExtension: "png"),
+           let image = NSImage(contentsOf: mainURL) {
+            return image
+        }
+
+        if let moduleURL = Bundle.module.url(forResource: character.spriteAssetName, withExtension: "png"),
+           let image = NSImage(contentsOf: moduleURL) {
+            return image
+        }
+
+        return nil
     }
 }
 
@@ -344,6 +291,23 @@ private extension BubbleMood {
 }
 
 private extension BubbleCharacter {
+    var usesSpriteArtwork: Bool {
+        switch self {
+        case .kitten, .puppy:
+            true
+        case .bubble, .dot, .sprout, .star:
+            false
+        }
+    }
+
+    var spriteAssetName: String {
+        switch self {
+        case .kitten: "baby-cat"
+        case .puppy: "baby-dog"
+        case .bubble, .dot, .sprout, .star: ""
+        }
+    }
+
     var bodySize: CGSize {
         switch self {
         case .bubble: CGSize(width: 132, height: 132)
@@ -379,35 +343,8 @@ private extension BubbleCharacter {
 
     @ViewBuilder var accent: some View {
         switch self {
-        case .bubble, .dot:
+        case .bubble, .dot, .kitten, .puppy:
             EmptyView()
-        case .kitten:
-            ZStack {
-                CatWhiskers()
-                    .stroke(
-                        Color(red: 0.27, green: 0.16, blue: 0.12).opacity(0.62),
-                        style: StrokeStyle(lineWidth: 2, lineCap: .round)
-                    )
-                    .frame(width: 78, height: 24)
-                    .offset(y: 12)
-
-                Capsule()
-                    .fill(Color(red: 0.92, green: 0.34, blue: 0.43))
-                    .frame(width: 9, height: 7)
-                    .offset(y: 8)
-            }
-        case .puppy:
-            ZStack {
-                Capsule()
-                    .fill(Color(red: 0.16, green: 0.09, blue: 0.07))
-                    .frame(width: 14, height: 10)
-                    .offset(y: 8)
-
-                Capsule()
-                    .fill(Color(red: 1.0, green: 0.45, blue: 0.50))
-                    .frame(width: 9, height: 14)
-                    .offset(y: 31)
-            }
         case .sprout:
             HStack(spacing: -3) {
                 Capsule()
@@ -440,47 +377,66 @@ private struct Smile: Shape {
     }
 }
 
-private struct CatEar: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
-        path.addQuadCurve(
-            to: CGPoint(x: rect.maxX, y: rect.maxY),
-            control: CGPoint(x: rect.maxX - 2, y: rect.midY)
-        )
-        path.addQuadCurve(
-            to: CGPoint(x: rect.minX, y: rect.maxY),
-            control: CGPoint(x: rect.midX, y: rect.maxY + 6)
-        )
-        path.addQuadCurve(
-            to: CGPoint(x: rect.midX, y: rect.minY),
-            control: CGPoint(x: rect.minX + 2, y: rect.midY)
-        )
-        return path
+private struct SpriteBlinkLids: View {
+    let character: BubbleCharacter
+    let isBlinking: Bool
+
+    var body: some View {
+        if isBlinking {
+            HStack(spacing: character.blinkSpacing) {
+                Capsule()
+                    .fill(character.blinkColor)
+                    .frame(width: character.blinkSize.width, height: character.blinkSize.height)
+                Capsule()
+                    .fill(character.blinkColor)
+                    .frame(width: character.blinkSize.width, height: character.blinkSize.height)
+            }
+            .offset(character.blinkOffset)
+            .transition(.opacity)
+        }
     }
 }
 
-private struct CatWhiskers: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let centerY = rect.midY
-        let gap: CGFloat = 10
+private extension BubbleCharacter {
+    var blinkColor: Color {
+        switch self {
+        case .kitten:
+            Color(red: 0.98, green: 0.78, blue: 0.50)
+        case .puppy:
+            Color(red: 0.78, green: 0.43, blue: 0.21)
+        case .bubble, .dot, .sprout, .star:
+            Color.clear
+        }
+    }
 
-        path.move(to: CGPoint(x: rect.midX - gap, y: centerY - 4))
-        path.addLine(to: CGPoint(x: rect.minX + 3, y: centerY - 8))
-        path.move(to: CGPoint(x: rect.midX - gap, y: centerY + 1))
-        path.addLine(to: CGPoint(x: rect.minX, y: centerY + 1))
-        path.move(to: CGPoint(x: rect.midX - gap, y: centerY + 6))
-        path.addLine(to: CGPoint(x: rect.minX + 5, y: centerY + 10))
+    var blinkSize: CGSize {
+        switch self {
+        case .kitten:
+            CGSize(width: 27, height: 8)
+        case .puppy:
+            CGSize(width: 25, height: 8)
+        case .bubble, .dot, .sprout, .star:
+            .zero
+        }
+    }
 
-        path.move(to: CGPoint(x: rect.midX + gap, y: centerY - 4))
-        path.addLine(to: CGPoint(x: rect.maxX - 3, y: centerY - 8))
-        path.move(to: CGPoint(x: rect.midX + gap, y: centerY + 1))
-        path.addLine(to: CGPoint(x: rect.maxX, y: centerY + 1))
-        path.move(to: CGPoint(x: rect.midX + gap, y: centerY + 6))
-        path.addLine(to: CGPoint(x: rect.maxX - 5, y: centerY + 10))
+    var blinkSpacing: CGFloat {
+        switch self {
+        case .kitten: 28
+        case .puppy: 25
+        case .bubble, .dot, .sprout, .star: 0
+        }
+    }
 
-        return path
+    var blinkOffset: CGSize {
+        switch self {
+        case .kitten:
+            CGSize(width: 0, height: -10)
+        case .puppy:
+            CGSize(width: 0, height: -14)
+        case .bubble, .dot, .sprout, .star:
+            .zero
+        }
     }
 }
 

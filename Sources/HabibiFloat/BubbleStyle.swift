@@ -85,11 +85,13 @@ enum BubbleCharacter: String, CaseIterable {
     case sprout
     case star
 
+    static let visibleChoices: [BubbleCharacter] = [.bubble, .kitten, .puppy]
+
     var title: String {
         switch self {
         case .bubble: "Bubbly"
-        case .kitten: "Baby Cat"
-        case .puppy: "Baby Dog"
+        case .kitten: "Cat"
+        case .puppy: "Dog"
         case .dot: "Dot"
         case .sprout: "Sprout"
         case .star: "Star"
@@ -97,7 +99,8 @@ enum BubbleCharacter: String, CaseIterable {
     }
 
     static func from(id: String) -> BubbleCharacter {
-        BubbleCharacter(rawValue: id) ?? .bubble
+        let character = BubbleCharacter(rawValue: id) ?? .bubble
+        return visibleChoices.contains(character) ? character : .bubble
     }
 }
 

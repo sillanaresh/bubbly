@@ -207,7 +207,7 @@ final class StatusMenuController: NSObject {
         let submenu = NSMenu(title: "Character")
         let selectedID = controller?.characterID ?? BubbleCharacter.bubble.rawValue
 
-        for character in BubbleCharacter.allCases {
+        for character in BubbleCharacter.visibleChoices {
             let item = NSMenuItem(title: character.title, action: #selector(chooseCharacter(_:)), keyEquivalent: "")
             item.target = self
             item.representedObject = character

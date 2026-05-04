@@ -11,6 +11,7 @@ MACOS_PATH="${CONTENTS_PATH}/MacOS"
 RESOURCES_PATH="${CONTENTS_PATH}/Resources"
 ICON_PATH="${RESOURCES_PATH}/AppIcon.icns"
 CHAT_BACKEND_URL="${HABIBI_CHAT_BACKEND_URL:-https://habibi-float-api.habibi-float.workers.dev/v1/chat}"
+RESOURCE_BUNDLE_NAME="HabibiFloat_HabibiFloat.bundle"
 
 swift build -c release
 
@@ -18,6 +19,11 @@ rm -rf "${APP_PATH}"
 mkdir -p "${MACOS_PATH}" "${RESOURCES_PATH}"
 
 cp ".build/release/${EXECUTABLE_NAME}" "${MACOS_PATH}/${APP_NAME}"
+RESOURCE_BUNDLE_PATH="$(find .build -path "*/release/${RESOURCE_BUNDLE_NAME}" -type d | head -n 1)"
+if [ -n "${RESOURCE_BUNDLE_PATH}" ]; then
+  cp "${RESOURCE_BUNDLE_PATH}/baby-cat.png" "${RESOURCES_PATH}/baby-cat.png"
+  cp "${RESOURCE_BUNDLE_PATH}/baby-dog.png" "${RESOURCES_PATH}/baby-dog.png"
+fi
 swift scripts/generate-icon.swift "${ICON_PATH}"
 
 cat > "${CONTENTS_PATH}/Info.plist" <<PLIST
