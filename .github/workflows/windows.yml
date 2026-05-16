@@ -1,0 +1,69 @@
+name: Windows Bubbly
+
+on:
+  push:
+    branches:
+      - main
+      - "sillanaresh/**"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Windows app
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore windows/Bubbly.Windows.sln
+
+      - name: Build
+        run: dotnet build windows/Bubbly.Windows.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test windows/Bubbly.Windows.Tests/Bubbly.Windows.Tests.csproj --configuration Release --no-build --logger trx
+
+      - name: Publish portable app
+        run: dotnet publish windows/Bubbly.Windows/Bubbly.Windows.csproj --configuration Release --runtime win-x64 --self-contained true --output artifacts/publish/Bubbly.Windows
+
+      - name: Create portable zip
+        shell: pwsh
+        run: Compress-Archive -Path artifacts/publish/Bubbly.Windows/* -DestinationPath artifacts/Bubbly-Windows-v1-portable.zip -Force
+
+      - name: Create installer icon
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          $source = Join-Path $env:GITHUB_WORKSPACE "windows/Bubbly.Windows/Assets/bubbly-app-icon.png"
+          $destination = Join-Path $env:GITHUB_WORKSPACE "windows/installer/bubbly-app-icon.ico"
+          $bitmap = [System.Drawing.Bitmap]::new($source)
+          $resized = [System.Drawing.Bitmap]::new($bitmap, [System.Drawing.Size]::new(256, 256))
+          $icon = [System.Drawing.Icon]::FromHandle($resized.GetHicon())
+          $stream = [System.IO.File]::Create($destination)
+          $icon.Save($stream)
+          $stream.Dispose()
+          $icon.Dispose()
+          $resized.Dispose()
+          $bitmap.Dispose()
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Build installer
+        run: iscc windows/installer/setup.iss
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bubbly-Windows-friend-test
+          path: |
+            artifacts/Bubbly-Windows-v1-portable.zip
+            artifacts/installer/Bubbly-Windows-v1.exe
