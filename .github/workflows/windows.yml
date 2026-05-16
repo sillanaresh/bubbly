@@ -60,10 +60,14 @@ jobs:
       - name: Build installer
         run: iscc windows/installer/setup.iss
 
-      - name: Upload artifacts
+      - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Bubbly-Windows-friend-test
-          path: |
-            artifacts/Bubbly-Windows-v1-portable.zip
-            artifacts/installer/Bubbly-Windows-v1.exe
+          name: Bubbly-Windows-installer
+          path: artifacts/installer/Bubbly-Windows-v1.exe
+
+      - name: Upload portable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bubbly-Windows-portable-zip
+          path: artifacts/Bubbly-Windows-v1-portable.zip
