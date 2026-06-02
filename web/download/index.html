@@ -2,80 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="robots" content="noindex">
-    <title>Downloading Bubbly...</title>
-    <style>
-      :root {
-        color-scheme: light;
-        font-family:
-          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-          "SF Pro Display", "Segoe UI", sans-serif;
-        background: #f4fbff;
-        color: #12313f;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        min-height: 100vh;
-        margin: 0;
-        display: grid;
-        place-items: center;
-        padding: 32px;
-        background:
-          radial-gradient(circle at 30% 24%, rgba(115, 214, 255, 0.28), transparent 32%),
-          linear-gradient(145deg, #ffffff 0%, #e7f7ff 100%);
-      }
-
-      main {
-        width: min(420px, 100%);
-        text-align: center;
-      }
-
-      img {
-        width: 84px;
-        height: 84px;
-        object-fit: contain;
-        filter: drop-shadow(0 18px 30px rgba(34, 132, 171, 0.2));
-      }
-
-      h1 {
-        margin: 18px 0 8px;
-        font-size: clamp(2rem, 7vw, 3rem);
-        line-height: 1;
-        letter-spacing: 0;
-      }
-
-      p {
-        margin: 0 0 22px;
-        color: #45616d;
-        font-size: 1rem;
-        line-height: 1.55;
-      }
-
-      a {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 48px;
-        padding: 0 18px;
-        border-radius: 999px;
-        background: #12313f;
-        color: #ffffff;
-        font-weight: 700;
-        text-decoration: none;
-      }
-    </style>
+    <title>Download Bubbly</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@600&amp;display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="../tokens.css">
+    <link rel="stylesheet" href="../styles.css">
   </head>
   <body>
-    <main>
-      <img src="../assets/bubbly-carefree-icon.png" alt="" width="84" height="84">
-      <h1>Download Bubbly</h1>
-      <p>Your Mac download is ready.</p>
-      <a href="../downloads/Bubbly-v1.dmg" download>Download DMG</a>
+    <main class="download-page">
+      <section class="download-card" aria-labelledby="download-title">
+        <img src="../assets/bubbly-carefree-icon.png" alt="" width="84" height="84">
+        <p class="quiet-line">Mac build</p>
+        <h1 id="download-title">Download Bubbly</h1>
+        <p>
+          Your DMG is ready. If macOS asks for approval, use Privacy & Security
+          in System Settings and choose Open Anyway for Bubbly.
+        </p>
+        <a class="button button-primary" href="../downloads/Bubbly-v1.dmg" download>
+          Download DMG
+        </a>
+      </section>
     </main>
     <script>
       window.va = window.va || function () {

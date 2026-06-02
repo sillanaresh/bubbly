@@ -1,0 +1,8 @@
+{
+  "date": "2026-06-02",
+  "font_stack": "No locked font system before this run; landing page now loads Bricolage Grotesque, Geist, and Geist Mono.",
+  "palette": "Existing web/styles.css used blue, pink, mint, and butter hex custom properties; this run replaced them with OKLCH tokens in web/tokens.css.",
+  "motion": "No motion library detected. CSS-only motion with reduced-motion fallbacks.",
+  "spacing": "No framework spacing scale detected. This run introduced Hallmark 4pt semantic spacing tokens.",
+  "framework": "Vanilla HTML/CSS web landing page plus Swift Package macOS app."
+}

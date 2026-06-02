@@ -2,180 +2,187 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Bubbly - Your tiny floating Mac companion</title>
     <meta
       name="description"
-      content="Bubbly is a tiny floating Mac companion that lives on your desktop, reacts to you, chats when needed, and adds playful little moments while you work."
+      content="Bubbly is a tiny floating Mac companion for your Mac desktop. It drifts while you work, reacts when you click it, opens a compact chat panel, and adds brief playful effects."
     >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@600&amp;display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="tokens.css">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <header class="site-header" aria-label="Bubbly landing page">
-      <a class="brand" href="#top" aria-label="Bubbly home">
-        <span class="brand-mark" aria-hidden="true"></span>
+    <header class="nav-slab" aria-label="Bubbly landing page">
+      <a class="slab-mark" href="#top" aria-label="Bubbly home">
+        <img src="assets/bubbly-app-icon.png" alt="" width="34" height="34">
         <span>Bubbly</span>
       </a>
-      <nav class="nav-links" aria-label="Page sections">
-        <a href="#experience">Experience</a>
+      <nav class="slab-nav" aria-label="Page sections">
+        <a href="#tour">Tour</a>
         <a href="#modes">Modes</a>
         <a href="#download">Install</a>
       </nav>
+      <a class="nav-download" href="download/">Download</a>
     </header>
 
     <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
+      <section class="hero-workbench" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">Your desktop companion</p>
-          <h1 id="hero-title">Bubbly</h1>
-          <p class="subheadline">A soft little presence that lives on your Mac.</p>
-          <p class="hero-description">
-            Bubbly floats while you work, reacts when you click it, keeps you
-            company, and opens into a lightweight chat assistant when you need a
-            quick answer.
+          <p class="quiet-line">Mac desktop companion</p>
+          <h1 id="hero-title">A small bubble that stays nearby.</h1>
+          <p class="hero-lede">
+            Bubbly floats beside your work, reacts when you click it, and opens
+            a compact chat panel when you need a quick answer.
           </p>
-          <div class="hero-actions">
-            <a class="primary-button" href="download/">Download for Mac</a>
-            <span class="supporting-note">Early tester build for friends.</span>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button button-primary" href="download/">Download Mac build</a>
+            <a class="button button-quiet" href="#tour">Watch it drift</a>
           </div>
-          <a
-            class="product-hunt-badge"
-            href="https://www.producthunt.com/products/bubbly-3?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-bubbly-6"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View Bubbly on Product Hunt"
+        </div>
+
+        <figure class="hero-media" aria-label="Bubbly demo video">
+          <video
+            class="product-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            poster="assets/bubbly-demo-poster.png"
+            fetchpriority="high"
           >
-            <img
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1138159&amp;theme=light&amp;t=1777829989580"
-              alt="Bubbly - Cute and friendly companion that stays with you all the time. | Product Hunt"
-              width="250"
-              height="54"
-            >
-          </a>
-        </div>
-
-        <div class="hero-product">
-          <div class="bubbly-stage" role="img" aria-label="Animated Bubbly floating on the page">
-            <div class="bubbly-drift">
-              <div class="bubbly-face" aria-hidden="true">
-                <span class="bubble-shine large"></span>
-                <span class="bubble-shine small"></span>
-                <span class="bubble-eye left"></span>
-                <span class="bubble-eye right"></span>
-                <span class="bubble-cheek left"></span>
-                <span class="bubble-cheek right"></span>
-                <span class="bubble-smile"></span>
-              </div>
-            </div>
-          </div>
-        </div>
+            <source src="assets/bubbly-demo.mp4" type="video/mp4">
+          </video>
+          <figcaption>
+            The actual app, floating on a Mac desktop with the companion and chat panel visible.
+          </figcaption>
+        </figure>
       </section>
 
-      <section class="preview-section" id="experience" aria-labelledby="experience-title">
-        <div class="section-heading">
-          <p class="eyebrow">The experience</p>
-          <h2 id="experience-title">Present, playful, never in the way.</h2>
+      <section class="tour-section" id="tour" aria-labelledby="tour-title">
+        <div class="section-head">
+          <h2 id="tour-title">It behaves like a desktop thing, not another tab.</h2>
           <p>
-            Bubbly gently breathes, blinks, bobs, and wanders around your
-            desktop. Drag it anywhere, pause it, hide it, or let it quietly
-            drift beside your work.
+            The interface is intentionally small: a bubble, a short set of
+            controls, and a chat panel that appears only when you ask for it.
           </p>
         </div>
 
-        <div class="desktop-preview">
-          <div class="window-bar">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="video-scene">
-            <video
-              class="product-video"
-              autoplay
-              muted
-              loop
-              playsinline
-              preload="metadata"
-              poster="assets/bubbly-demo-poster.png"
-            >
-              <source src="assets/bubbly-demo.mp4" type="video/mp4">
-            </video>
-          </div>
+        <div class="workbench-grid">
+          <article class="bench-card bench-card-large">
+            <span class="bench-index">01</span>
+            <h3>Drift while you work</h3>
+            <p>
+              Bubbly breathes, blinks, bobs, and wanders. Drag it somewhere
+              better, pause it, hide it, or let smart positioning keep it away
+              from common app controls.
+            </p>
+          </article>
+          <article class="bench-card bench-card-soft">
+            <span class="bench-index">02</span>
+            <h3>Click for a tiny reaction</h3>
+            <p>
+              A quick bounce and soft sound make the companion feel present
+              without turning your desktop into a toy box.
+            </p>
+          </article>
+          <article class="bench-card bench-card-outline">
+            <span class="bench-index">03</span>
+            <h3>Open chat beside it</h3>
+            <p>
+              Chat pins Bubbly in place and opens a lightweight panel for quick
+              questions, ideas, and back-and-forth.
+            </p>
+          </article>
         </div>
       </section>
 
-      <section class="features-section" id="modes" aria-labelledby="modes-title">
-        <div class="section-heading compact">
-          <p class="eyebrow">Make it yours</p>
-          <h2 id="modes-title">Choose how much personality you want.</h2>
+      <section class="modes-section" id="modes" aria-labelledby="modes-title">
+        <div class="section-head compact">
+          <h2 id="modes-title">Pick the amount of personality.</h2>
           <p>
-            Bubbly can stay calm, become a tiny chat companion, or bring playful
-            little effects onto the desktop for a quick break. Playtime adds
-            rain, clouds, butterflies, sparkles, and cannon bursts; themes and
-            moods change how Bubbly looks and feels.
+            Bubbly can stay calm, become chatty, or bring short desktop effects
+            when you want a break from the serious rectangle work.
           </p>
         </div>
 
-        <div class="feature-grid">
-          <article class="feature-card">
+        <div class="mode-list" role="list">
+          <article class="mode-row" role="listitem">
             <h3>Carefree</h3>
-            <p>Just Bubbly floating around, with no extra action icons.</p>
+            <p>Only the floating companion. No extra action icons.</p>
           </article>
-          <article class="feature-card">
+          <article class="mode-row" role="listitem">
             <h3>Chatty</h3>
-            <p>Open a compact chat panel when you want a quick answer.</p>
+            <p>A compact chat button and a small panel for quick answers.</p>
           </article>
-          <article class="feature-card">
+          <article class="mode-row" role="listitem">
             <h3>Playtime</h3>
-            <p>Trigger rain, clouds, butterflies, sparkles, and cannon bursts.</p>
+            <p>Brief rain, clouds, butterflies, cannon bursts, and sparkles.</p>
           </article>
-          <article class="feature-card">
+          <article class="mode-row" role="listitem">
             <h3>Bubbly Max</h3>
             <p>Chat plus every playful effect around the bubble.</p>
           </article>
-          <article class="feature-card wide">
-            <h3>Themes and moods</h3>
-            <p>
-              Change colors, expressions, sounds, characters, and motion style
-              so Bubbly feels like it belongs on your screen.
-            </p>
-          </article>
-          <article class="feature-card wide controls-card">
-            <h3>Right-click controls</h3>
-            <p>
-              Right-click Bubbly to show, hide, pause, reset position, switch
-              modes, change themes, and quit cleanly.
-            </p>
-          </article>
-          <article class="feature-card wide quiet-card">
-            <h3>Local-first feel</h3>
-            <p>
-              Preferences stay on your Mac. Chat only uses the network when you
-              send a message.
-            </p>
-          </article>
         </div>
       </section>
 
-      <section class="download-section" id="download" aria-labelledby="download-title">
+      <section class="settings-strip" aria-labelledby="settings-title">
+        <h2 id="settings-title">Small controls, visible choices.</h2>
+        <div class="settings-grid">
+          <p>Themes change the palette.</p>
+          <p>Moods change the expression and motion feel.</p>
+          <p>Characters switch between Bubbly, Cat, and Dog.</p>
+          <p>Sounds and volume decide how noticeable clicks are.</p>
+          <p>Preferences stay on the Mac.</p>
+          <p>Chat uses the network only when you send a message.</p>
+        </div>
+      </section>
+
+      <section class="download-panel" id="download" aria-labelledby="download-title">
         <div>
-          <p class="eyebrow">Download</p>
-          <h2 id="download-title">Try Bubbly on your Mac.</h2>
+          <h2 id="download-title">Try the early Mac build.</h2>
           <p>
-            This is an early friend build, so Bubbly is not Apple-notarized yet.
-            Apple notarization needs a paid Apple Developer account, which costs
-            about $99/year. If macOS blocks it, click Done, then open System
-            Settings → Privacy &amp; Security → Open Anyway for Bubbly. Do not
-            choose Move to Bin.
+            Bubbly is shared as a friend build DMG. It is not Apple-notarized
+            yet, so macOS may ask you to approve it in System Settings.
+          </p>
+          <p class="download-note">
+            If you see "Bubbly" Not Opened, choose Done, then open Privacy &
+            Security and use Open Anyway for Bubbly.
           </p>
         </div>
-        <a class="primary-button secondary-placement" href="download/">Download for Mac</a>
+        <a class="button button-primary" href="download/">Download Mac build</a>
+      </section>
+
+      <section class="hunt-strip" aria-label="Product Hunt">
+        <p>Following along?</p>
+        <a
+          class="hunt-link"
+          href="https://www.producthunt.com/products/bubbly-3?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-bubbly-6"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View Bubbly on Product Hunt"
+        >
+          View on Product Hunt
+        </a>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <p>Bubbly is an early tester build. Expect small changes as it gets polished.</p>
+    <footer class="foot-marquee" aria-label="Footer">
+      <div class="foot-marquee-track" aria-hidden="true">
+        <span>Bubbly for Mac · tiny companion · soft but exact · early build ·</span>
+        <span>Bubbly for Mac · tiny companion · soft but exact · early build ·</span>
+      </div>
+      <p class="visually-hidden">
+        Bubbly is an early tester build for Mac. Expect small changes as it gets polished.
+      </p>
     </footer>
+
     <script>
       window.va = window.va || function () {
         (window.vaq = window.vaq || []).push(arguments);
